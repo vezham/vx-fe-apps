@@ -1,0 +1,9 @@
+{
+  "name": "tamizhi-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/tamizhi-e2e/src",
+  "tags": ["category:app", "e2e"],
+  "implicitDependencies": ["tamizhi"],
+  "targets": {}
+}

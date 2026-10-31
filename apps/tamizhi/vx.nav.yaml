@@ -1,0 +1,140 @@
+# yaml-language-server: $schema=../../vx/schemas/vx.nav.json
+navigation:
+  - key: home
+    icon: vx:home
+    iconActive: vx:home-filled
+    href: /
+    title: Home
+  - key: pro
+    icon: vx:library
+    iconActive: vx:library-filled
+    href: /pro
+    title: Pro
+
+appMenu:
+  - key: file
+    label: File
+    groups:
+      - - key: file.new
+          label: New…
+          shortcut: Mod N
+        - key: file.open
+          label: Open…
+          shortcut: Mod O
+      - - key: file.save
+          label: Save
+          shortcut: Mod S
+        - key: file.save-as
+          label: Save As…
+          shortcut: ⇧ Mod S
+      - - key: file.import
+          label: Import…
+        - key: file.export
+          label: Export…
+      - - key: file.print
+          label: Print…
+          shortcut: Mod P
+  - key: edit
+    label: Edit
+    groups:
+      - - key: edit.undo
+          label: Undo
+          shortcut: Mod Z
+        - key: edit.redo
+          label: Redo
+          shortcut: ⇧ Mod Z
+      - - key: edit.cut
+          label: Cut
+          shortcut: Mod X
+        - key: edit.copy
+          label: Copy
+          shortcut: Mod C
+        - key: edit.paste
+          label: Paste
+          shortcut: Mod V
+        - key: edit.select-all
+          label: Select All
+          shortcut: Mod A
+      - - key: edit.find
+          label: Find…
+          shortcut: Mod F
+  - key: view
+    label: View
+    groups:
+      - - key: view.zoom-in
+          label: Zoom In
+          shortcut: Mod +
+        - key: view.zoom-out
+          label: Zoom Out
+          shortcut: Mod -
+        - key: view.actual-size
+          label: Actual Size
+          shortcut: Mod 0
+      - - key: view.full-screen
+          label: Enter Full Screen
+  - key: help
+    label: Help
+    groups:
+      - - key: help.app-help
+          label: App Help
+        - key: help.keyboard-shortcuts
+          label: Keyboard Shortcuts
+      - - key: help.report-issue
+          label: Report an Issue…
+        - key: help.send-feedback
+          label: Send Feedback…
+
+controlCenter:
+  editControls: true
+  tiles:
+    - id: appearance-toggle
+      type: appearance-toggle
+      span: compact
+    - id: theme
+      type: theme
+      span: wide
+    - id: direction-toggle
+      type: direction-toggle
+      span: compact
+    - id: language
+      type: language
+      span: wide
+    - id: direction
+      type: direction
+      span: wide
+    - id: display
+      type: preview-display
+      span: full
+    - id: sound
+      type: preview-sound
+      span: full
+    - id: media
+      type: preview-media
+      span: full
+    - id: wifi
+      type: preview-wifi
+      span: wide
+    - id: bluetooth
+      type: preview-bluetooth
+      span: wide
+    - id: airdrop
+      type: preview-airdrop
+      span: wide
+    - id: focus
+      type: preview-focus
+      span: full
+    - id: stage-manager
+      type: preview-stage-manager
+      span: wide
+    - id: mirroring
+      type: preview-mirroring
+      span: full
+    - id: appearance-lite
+      type: appearance-toggle
+      span: compact
+    - id: appearance
+      type: appearance
+      span: wide
+    - id: appearance-wide
+      type: appearance
+      span: wide

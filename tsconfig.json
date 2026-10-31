@@ -7,6 +7,12 @@
   "references": [
     {
       "path": "./packages/vx/react"
+    },
+    {
+      "path": "./apps/tamizhi-e2e"
+    },
+    {
+      "path": "./apps/tamizhi"
     }
   ],
   "compilerOptions": {
