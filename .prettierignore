@@ -5,6 +5,9 @@
 
 .vezham
 
+# vx-bot/NOTE: Preserve the MIT-licensed Momo renderer as upstream source.
+apps/tamizhi/public/momo/**
+
 # MDX content
 # **/content/**/*.mdx
 

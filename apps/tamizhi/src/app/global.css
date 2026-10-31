@@ -1,3 +1,814 @@
 @import '../../../../packages/vx/styles';
 
-/* You can add global styles to this file, and also import other style files */
+.tamizhi {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, Inter, sans-serif;
+  font-size: 0.875rem;
+  -webkit-font-smoothing: antialiased;
+  container-type: inline-size;
+}
+
+.tamizhi__sidebar {
+  width: 15.5rem;
+  flex-shrink: 0;
+  border-right: 0.0625rem solid var(--border);
+}
+
+.tamizhi-sidebar {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  background: var(--surface-secondary);
+}
+
+.tamizhi-sidebar__brand {
+  display: flex;
+  height: 3.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.125rem;
+  padding-inline: 0.6875rem;
+  border-bottom: 0.0625rem solid var(--border);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.0225rem;
+}
+
+.tamizhi-sidebar__new {
+  width: calc(100% - 1.5rem);
+  min-height: 2.125rem;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  gap: 0.625rem;
+  margin: 0.75rem 0.75rem 0;
+  padding-inline: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.tamizhi-sidebar__scroll {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.5rem;
+  overflow-y: auto;
+  padding: 1.5rem 0.75rem 1rem;
+  scrollbar-width: thin;
+}
+
+.tamizhi-sidebar__group h2 {
+  margin-bottom: 0.5rem;
+  padding-inline: 0.5rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tamizhi-sidebar__example {
+  width: 100%;
+  height: 2.125rem;
+  justify-content: flex-start;
+  gap: 0.625rem;
+  padding-inline: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.tamizhi-sidebar__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgb(239, 140, 102);
+}
+
+.tamizhi-sidebar__dot[data-persona='coder'] {
+  background: rgb(170, 149, 233);
+}
+
+.tamizhi-sidebar__dot[data-persona='writer'] {
+  background: rgb(163, 201, 119);
+}
+
+.tamizhi-sidebar__dot[data-persona='planner'] {
+  background: rgb(143, 217, 162);
+}
+
+.tamizhi-sidebar__dot[data-persona='tutor'] {
+  background: rgb(116, 207, 194);
+}
+
+.tamizhi-sidebar__dot[data-persona='explorer'] {
+  background: rgb(135, 204, 238);
+}
+
+.tamizhi-sidebar__chat {
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+}
+
+.tamizhi-sidebar__chat[data-active='true'] {
+  background: var(--default);
+}
+
+.tamizhi-sidebar__chat-link {
+  min-width: 0;
+  flex: 1;
+  justify-content: flex-start;
+  padding-inline: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.tamizhi-sidebar__chat-link span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tamizhi-sidebar__chat > :last-child {
+  color: var(--muted);
+}
+
+.tamizhi-sidebar__note {
+  padding: 0.75rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.6875rem;
+}
+
+.tamizhi__main {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex: 1;
+  flex-direction: column;
+}
+
+.tamizhi__header {
+  display: flex;
+  height: 3.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.8125rem 0 1.25rem;
+  border-bottom: 0.0625rem solid var(--border);
+}
+
+.tamizhi__header-title {
+  overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tamizhi__connection {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.tamizhi__connection > span {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.tamizhi__connection[data-offline='true'] > span {
+  background: var(--danger);
+}
+
+.tamizhi__playground-button {
+  display: inline-flex;
+  height: 2rem;
+  min-height: 2rem;
+  gap: 0.375rem;
+  padding: 0 0.75rem;
+  border: 0.0625rem solid var(--border);
+  border-radius: 1rem;
+  background: var(--surface);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.tamizhi__menu-toggle {
+  display: none;
+}
+
+.tamizhi__scroll {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2rem 0;
+  scrollbar-width: thin;
+}
+
+.tamizhi-welcome {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem 2rem;
+  text-align: center;
+}
+
+.tamizhi-welcome__stage {
+  width: 10.625rem;
+  height: 10.625rem;
+  margin-bottom: -0.125rem;
+}
+
+.tamizhi-welcome__question {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem 0.625rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.0225rem;
+  line-height: 2rem;
+}
+
+.tamizhi-welcome__bot {
+  display: inline-flex;
+  height: 2.5rem;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0 0.625rem 0 1rem;
+  border-radius: 999rem;
+  background: var(--accent-soft);
+  color: var(--accent-soft-foreground);
+  font: inherit;
+  cursor: pointer;
+}
+
+.tamizhi-welcome__new-bot {
+  height: 2rem;
+  margin-top: 1rem;
+  padding: 0 0.875rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.tamizhi-bots {
+  max-height: 25rem;
+  overflow-y: auto;
+}
+
+.tamizhi-composer {
+  z-index: 2;
+  width: min(100%, 48rem);
+  flex-shrink: 0;
+  margin: 0 auto;
+  padding: 0 1.5rem 0.75rem;
+}
+
+.tamizhi-composer__form {
+  position: relative;
+  display: flex;
+  min-height: 3.5rem;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+  border: 0.0625rem solid var(--border);
+  border-radius: 1.75rem;
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+}
+
+.tamizhi-composer__form:focus-within {
+  border-color: var(--focus);
+}
+
+.tamizhi-composer__input {
+  display: block;
+  width: 100%;
+  min-height: 2.5rem;
+  height: 2.5rem;
+  max-height: 13rem;
+  margin: 0;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+  resize: none;
+  border: 0;
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.tamizhi-composer__input:focus-visible {
+  outline: 0;
+  box-shadow: none;
+}
+
+.tamizhi-composer__input::placeholder {
+  color: var(--muted);
+}
+
+.tamizhi-composer__send {
+  height: 2.5rem;
+  min-width: 4.5rem;
+  flex-shrink: 0;
+  padding-inline: 1.125rem;
+  border-radius: 1.25rem;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.tamizhi-composer__send[disabled] {
+  opacity: 0.28;
+}
+
+.tamizhi-composer__note {
+  padding-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.625rem;
+  text-align: center;
+}
+
+.tamizhi__perch {
+  position: absolute;
+  z-index: 3;
+  bottom: 5.5rem;
+  left: max(1.75rem, calc((100% - 45rem) / 2));
+  width: 5.75rem;
+  height: 5.75rem;
+  pointer-events: none;
+}
+
+.tamizhi-conversation {
+  width: min(100% - 3rem, 45rem);
+  margin-inline: auto;
+  padding-bottom: 5.5rem;
+}
+
+.tamizhi-message {
+  margin-bottom: 1.75rem;
+}
+
+.tamizhi-message--user {
+  width: fit-content;
+  max-width: 85%;
+  margin-left: auto;
+  padding: 0.625rem 0.875rem;
+  border-radius: 1.125rem 1.125rem 0.25rem;
+  background: var(--default);
+  color: var(--default-foreground);
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.tamizhi-message__identity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: -0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.tamizhi-message__demo {
+  color: var(--muted);
+  font-size: 0.625rem;
+  font-weight: 400;
+}
+
+.tamizhi-message__body {
+  padding-left: 2.125rem;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.tamizhi-message__body p {
+  margin-block: 0.75rem;
+}
+
+.tamizhi-message__body ol {
+  margin-block: 0.75rem;
+  padding-left: 1.375rem;
+  list-style: decimal;
+}
+
+.tamizhi-message__body ul {
+  margin-block: 0.75rem;
+  padding-left: 1.375rem;
+  list-style: disc;
+}
+
+.tamizhi-message__body li {
+  margin-block: 0.375rem;
+  padding-left: 0.25rem;
+}
+
+.tamizhi-message__body strong {
+  font-weight: 600;
+}
+
+.tamizhi-message__body pre {
+  overflow-x: auto;
+  padding: 1.125rem;
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface-secondary);
+  font-size: 0.75rem;
+  line-height: 1.8;
+}
+
+.tamizhi-message__body blockquote {
+  margin: 1.125rem 0;
+  padding: 0.125rem 1.125rem;
+  border-left: 0.125rem solid var(--border);
+  color: var(--muted);
+}
+
+.tamizhi-message__body a {
+  text-decoration: underline;
+}
+
+.tamizhi-message__thinking {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.tamizhi-message__cursor {
+  display: inline-block;
+  width: 0.375rem;
+  height: 0.8125rem;
+  border-radius: 0.1875rem;
+  background: var(--foreground);
+}
+
+.tamizhi-message__cursor[data-animated='true'] {
+  animation: tamizhi-pulse 1000ms infinite;
+}
+
+.tamizhi-message__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  margin: 0.625rem 0 0 1.6875rem;
+  color: var(--muted);
+}
+
+.tamizhi-message__actions > span {
+  margin-left: 0.375rem;
+  font-size: 0.625rem;
+}
+
+.tamizhi-message__checklist {
+  margin: 1.25rem 0 0 2.125rem;
+  padding: 1.25rem;
+}
+
+.tamizhi-message__checklist [data-slot='card-title'] {
+  font-size: 0.875rem;
+}
+
+.tamizhi-message__checklist [data-slot='card-description'] {
+  font-size: 0.6875rem;
+}
+
+.tamizhi-message__checklist [data-slot='label'] {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.tamizhi__playground {
+  display: flex;
+  width: 20.5rem;
+  min-height: 0;
+  flex-shrink: 0;
+  flex-direction: column;
+  border-left: 0.0625rem solid var(--border);
+  background: var(--background);
+}
+
+.tamizhi__playground-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.tamizhi-playground {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tamizhi-playground h2 {
+  margin-bottom: 0.5rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tamizhi-playground p {
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.tamizhi-playground__pills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, calc((100% - 0.375rem) / 2)));
+  gap: 0.375rem;
+}
+
+.tamizhi-playground__section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tamizhi-playground__section-heading h2 {
+  margin-bottom: 0;
+}
+
+.tamizhi-playground__pills > button {
+  height: 2rem;
+  min-height: 2rem;
+  min-width: 0;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding-inline: 0.75rem;
+  border: 0.0625rem solid var(--border);
+  border-radius: 999rem;
+  background: var(--surface);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.tamizhi-playground__pills > button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.tamizhi-playground__pills--expressions > button {
+  justify-content: center;
+}
+
+.tamizhi-playground__outfit-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.tamizhi-playground__colours {
+  display: flex;
+  gap: 0.625rem;
+  padding: 0.25rem;
+}
+
+.tamizhi-playground__swatch {
+  width: 1.625rem;
+  height: 1.625rem;
+  min-width: 1.625rem;
+  min-height: 1.625rem;
+  border: 0.0625rem solid var(--border);
+  border-radius: 50%;
+}
+
+.tamizhi-playground__swatch[aria-pressed='true'] {
+  outline: 0.125rem solid var(--foreground);
+  outline-offset: 0.1875rem;
+}
+
+.tamizhi-playground__segment {
+  display: flex;
+  padding: 0.1875rem;
+  border-radius: 0.625rem;
+  background: var(--default);
+}
+
+.tamizhi-playground__segment > button {
+  min-width: 0;
+  height: 1.75rem;
+  flex: 1;
+  border-radius: 0.4375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.tamizhi-playground__segment > button[aria-pressed='true'] {
+  background: var(--surface);
+  box-shadow: var(--surface-shadow);
+}
+
+.tamizhi-playground__credit {
+  margin-top: auto;
+}
+
+.tamizhi-playground__last-pick {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 0.0625rem solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--surface);
+}
+
+.tamizhi-playground__sizes {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.25rem;
+}
+
+.tamizhi-playground__sizes figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tamizhi-playground__sizes figcaption {
+  color: var(--muted);
+  font-size: 0.6875rem;
+}
+
+.tamizhi-playground__credit a {
+  text-decoration: underline;
+}
+
+.tamizhi__mobile-sidebar {
+  width: min(18.75rem, 84vw);
+  padding: 0;
+}
+
+.tamizhi__mobile-sidebar .tamizhi-sidebar__brand {
+  padding-top: 0.75rem;
+  height: 4rem;
+}
+
+.tamizhi-companion {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.tamizhi-companion canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tamizhi-companion--small {
+  width: 1.625rem;
+  height: 1.625rem;
+}
+
+.tamizhi-companion__error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 0.6875rem;
+}
+
+@keyframes tamizhi-pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@container (width < 56.25rem) {
+  .tamizhi__sidebar {
+    width: 13.75rem;
+  }
+}
+
+@container (width <= 45rem) {
+  .tamizhi__sidebar {
+    display: none;
+  }
+
+  .tamizhi__menu-toggle {
+    display: inline-flex;
+  }
+
+  .tamizhi__header {
+    height: 3.25rem;
+    gap: 0.25rem;
+    padding-inline: 0.5rem;
+  }
+
+  .tamizhi__header-title {
+    flex: 1;
+  }
+
+  .tamizhi__connection {
+    width: 0.4375rem;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .tamizhi__connection > span {
+    flex-shrink: 0;
+  }
+
+  .tamizhi-welcome {
+    padding: 0 1rem 2rem;
+  }
+
+  .tamizhi-welcome__stage {
+    width: 8.75rem;
+    height: 8.75rem;
+  }
+
+  .tamizhi-welcome__question {
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+  }
+
+  .tamizhi-welcome__bot {
+    height: 2.25rem;
+  }
+
+  .tamizhi-conversation {
+    width: calc(100% - 2rem);
+  }
+
+  .tamizhi-message__body {
+    padding-left: 0;
+    font-size: 0.875rem;
+  }
+
+  .tamizhi-message__checklist {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .tamizhi-message__actions {
+    margin-left: 0;
+  }
+
+  .tamizhi-composer {
+    padding: 0 1rem max(0.5rem, env(safe-area-inset-bottom));
+  }
+
+  .tamizhi-composer__form {
+    padding: 0.375rem 0.375rem 0.375rem 1rem;
+    border-radius: 1.625rem;
+  }
+
+  .tamizhi-composer__send {
+    min-width: 4rem;
+    padding-inline: 0.875rem;
+  }
+
+  .tamizhi__perch {
+    bottom: 5.25rem;
+    left: 1.25rem;
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tamizhi-message__cursor {
+    animation: none !important;
+  }
+}
