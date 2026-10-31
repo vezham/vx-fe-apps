@@ -10,6 +10,29 @@ import {
 import type { AvatarRenderer } from './avatar-renderer'
 import type { Persona } from './demo'
 
+type ConnectionReactionPhase =
+  | 'disconnect-surprised'
+  | 'disconnect-dizzy'
+  | 'disconnect-settle'
+  | 'reconnect-wait'
+  | 'reconnect-surprised'
+  | 'reconnect-recover'
+  | 'reconnect-happy'
+type ConnectionReaction = {
+  phase: ConnectionReactionPhase
+  startedAt: number
+} | null
+
+const CONNECTION_REACTION_DURATIONS: Record<ConnectionReactionPhase, number> = {
+  'disconnect-surprised': 420,
+  'disconnect-dizzy': 700,
+  'disconnect-settle': 350,
+  'reconnect-wait': 840,
+  'reconnect-surprised': 260,
+  'reconnect-recover': 420,
+  'reconnect-happy': 1000
+}
+
 interface Props {
   persona?: Persona
   outfit?: Outfit
@@ -35,14 +58,18 @@ export const Companion = ({
 }: Props) => {
   const host = useRef<HTMLDivElement>(null)
   const redraw = useRef<(() => void) | undefined>(undefined)
+  const [connectionReaction, setConnectionReaction] =
+    useState<ConnectionReaction>(null)
   const latest = useRef({
     outfit,
     expression,
     palette,
     isThinking,
     isOffline,
-    isAnimated
+    isAnimated,
+    connectionReaction
   })
+  const previousOffline = useRef(isOffline)
   const [status, setStatus] = useState('loading')
   useEffect(() => {
     latest.current = {
@@ -51,10 +78,52 @@ export const Companion = ({
       palette,
       isThinking,
       isOffline,
-      isAnimated
+      isAnimated,
+      connectionReaction
     }
     redraw.current?.()
-  }, [outfit, expression, palette, isThinking, isOffline, isAnimated])
+  }, [
+    outfit,
+    expression,
+    palette,
+    isThinking,
+    isOffline,
+    isAnimated,
+    connectionReaction
+  ])
+
+  useEffect(() => {
+    if (previousOffline.current === isOffline) return
+    previousOffline.current = isOffline
+    if (
+      size !== 'large' ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      const resetTimer = window.setTimeout(() => setConnectionReaction(null), 0)
+      return () => window.clearTimeout(resetTimer)
+    }
+
+    const timers: number[] = []
+    const beginReaction = (phase: ConnectionReactionPhase) =>
+      setConnectionReaction({ phase, startedAt: performance.now() })
+    if (isOffline) {
+      beginReaction('disconnect-surprised')
+      timers.push(
+        window.setTimeout(() => beginReaction('disconnect-dizzy'), 420),
+        window.setTimeout(() => beginReaction('disconnect-settle'), 1120),
+        window.setTimeout(() => setConnectionReaction(null), 1470)
+      )
+    } else {
+      beginReaction('reconnect-wait')
+      timers.push(
+        window.setTimeout(() => beginReaction('reconnect-surprised'), 840),
+        window.setTimeout(() => beginReaction('reconnect-recover'), 1100),
+        window.setTimeout(() => beginReaction('reconnect-happy'), 1520),
+        window.setTimeout(() => setConnectionReaction(null), 2520)
+      )
+    }
+    return () => timers.forEach(window.clearTimeout)
+  }, [isOffline, size])
 
   useEffect(() => {
     const element = host.current
@@ -63,6 +132,9 @@ export const Companion = ({
     let frame = 0
     let renderer: AvatarRenderer | undefined
     let canvas: HTMLCanvasElement | undefined
+    let shownFace: number | undefined
+    let faceOverlay: HTMLCanvasElement | undefined
+    let faceOverlayTimer: number | undefined
     let appearanceObserver: MutationObserver | undefined
     let visible = true
     let lastInteraction = performance.now()
@@ -114,7 +186,43 @@ export const Companion = ({
         let shownOutfit = latest.current.outfit
         let spinStarted = -1
         let previousPalette: number[][] | undefined
+        const previousMotion = new Map<string, number | number[]>()
         let snapshotIdle = false
+        const smoothMotion = (
+          state: Awaited<ReturnType<typeof avatarState>>
+        ) => {
+          const smoothed = { ...state }
+          for (const field of [
+            'yaw',
+            'roll',
+            'squash',
+            'dead',
+            'fall',
+            'lift'
+          ] as const) {
+            const target = state[field]
+            const previous = previousMotion.get(field)
+            if (typeof target === 'number') {
+              const value =
+                typeof previous === 'number'
+                  ? previous + (target - previous) * 0.2
+                  : target
+              smoothed[field] = value
+              previousMotion.set(field, value)
+            }
+          }
+          const targetTip = state.tip as number[]
+          const previousTip = previousMotion.get('tip')
+          const oldTip = Array.isArray(previousTip) ? previousTip : targetTip
+          const tip = targetTip.map(
+            (value, index) =>
+              (oldTip[index] ?? value) +
+              (value - (oldTip[index] ?? value)) * 0.2
+          )
+          smoothed.tip = tip
+          previousMotion.set('tip', tip)
+          return smoothed
+        }
         const draw = async (now: number) => {
           if (cancelled || !renderer || !canvas) return
           try {
@@ -123,8 +231,24 @@ export const Companion = ({
               isDark: document.documentElement.classList.contains('dark')
             }
             const key = JSON.stringify(settings)
+            const reaction = settings.connectionReaction?.phase
+            const reactionProgress = settings.connectionReaction
+              ? Math.max(
+                  0,
+                  Math.min(
+                    1,
+                    (now - settings.connectionReaction.startedAt) /
+                      CONNECTION_REACTION_DURATIONS[
+                        settings.connectionReaction.phase
+                      ]
+                  )
+                )
+              : 0
+            const reacting = size === 'large' && !!reaction
             const animated =
-              size === 'large' && settings.isAnimated && !reduced.matches
+              size === 'large' &&
+              !reduced.matches &&
+              (settings.isAnimated || reacting)
             if (
               size === 'small' &&
               (!visible || document.visibilityState !== 'visible')
@@ -145,16 +269,37 @@ export const Companion = ({
               now - lastDraw > (renderer.info.cpuTier ? 66 : 33)
             ) {
               lastDraw = now
+              const reactionExpression: Expression | undefined =
+                reaction === 'disconnect-surprised' ||
+                reaction === 'reconnect-surprised' ||
+                reaction === 'reconnect-recover'
+                  ? 'surprised'
+                  : reaction === 'disconnect-dizzy'
+                    ? 'dizzy'
+                    : reaction === 'reconnect-happy'
+                      ? 'happy'
+                      : undefined
+              const keepOfflineLook =
+                reaction === 'reconnect-wait' ||
+                reaction === 'reconnect-surprised'
               const state = await avatarState(
                 {
                   ...settings,
+                  connectionReaction: reaction,
+                  connectionReactionProgress: reactionProgress,
+                  isOffline:
+                    keepOfflineLook ||
+                    (settings.isOffline &&
+                      reaction !== 'disconnect-surprised' &&
+                      reaction !== 'disconnect-dizzy'),
                   expression:
-                    animated &&
+                    reactionExpression ??
+                    (animated &&
                     settings.expression === 'neutral' &&
                     !settings.isThinking &&
                     now - lastInteraction > 25000
                       ? 'sleepy'
-                      : settings.expression
+                      : settings.expression)
                 },
                 (now - start) / 1000,
                 animated ? pointer : [0, 0],
@@ -183,6 +328,33 @@ export const Companion = ({
                 frame = requestAnimationFrame(draw)
                 return
               }
+              if (
+                size === 'large' &&
+                !reduced.matches &&
+                shownFace !== undefined &&
+                shownFace !== Number(state.face)
+              ) {
+                faceOverlay?.remove()
+                if (faceOverlayTimer !== undefined)
+                  window.clearTimeout(faceOverlayTimer)
+                const overlay = document.createElement('canvas')
+                overlay.width = canvas.width
+                overlay.height = canvas.height
+                overlay.className = 'tamizhi-companion__face-transition'
+                overlay.setAttribute('aria-hidden', 'true')
+                overlay.getContext('2d')?.drawImage(canvas, 0, 0)
+                element.appendChild(overlay)
+                faceOverlay = overlay
+                requestAnimationFrame(() => {
+                  overlay.classList.add(
+                    'tamizhi-companion__face-transition--fade'
+                  )
+                })
+                faceOverlayTimer = window.setTimeout(() => {
+                  overlay.remove()
+                  if (faceOverlay === overlay) faceOverlay = undefined
+                }, 180)
+              }
               const pixels =
                 size === 'small'
                   ? previewSize
@@ -197,15 +369,20 @@ export const Companion = ({
                         element.clientWidth * Math.min(devicePixelRatio || 1, 2)
                       )
                     )
+              const renderState =
+                animated && (reacting || settings.isOffline)
+                  ? smoothMotion(state)
+                  : state
               const result =
                 size === 'small'
                   ? await renderer.drawAsync(canvas, pixels, {
-                      ...state,
+                      ...renderState,
                       small: 1
                     })
-                  : renderer.draw(null, pixels, state)
+                  : renderer.draw(null, pixels, renderState)
               if (result && !cancelled) {
                 previous = key
+                shownFace = Number(state.face)
                 setStatus('ready')
                 element.dataset.renderer = renderer.info.renderer
                 element.dataset.renderedOutfit = settings.outfit
@@ -256,6 +433,8 @@ export const Companion = ({
       cancelAnimationFrame(frame)
       observer.disconnect()
       appearanceObserver?.disconnect()
+      if (faceOverlayTimer !== undefined) window.clearTimeout(faceOverlayTimer)
+      faceOverlay?.remove()
       document.removeEventListener('visibilitychange', resumeSnapshot)
       redraw.current = undefined
       window.removeEventListener('pointermove', followPointer)
@@ -269,6 +448,7 @@ export const Companion = ({
     <div
       ref={host}
       className={`tamizhi-companion tamizhi-companion--${size}`}
+      data-connection-reaction={connectionReaction?.phase}
       style={
         previewSize
           ? {

@@ -56,6 +56,16 @@ export const getSnapshotRenderer = () =>
 export interface AvatarState {
   outfit: Outfit
   expression: Expression
+  connectionReaction?:
+    | 'disconnect-surprised'
+    | 'disconnect-dizzy'
+    | 'disconnect-settle'
+    | 'reconnect-wait'
+    | 'reconnect-surprised'
+    | 'reconnect-recover'
+    | 'reconnect-happy'
+    | null
+  connectionReactionProgress?: number
   palette?: string
   isThinking: boolean
   isOffline: boolean
@@ -82,6 +92,21 @@ export const avatarState = async (
     blinkPhase > 4.16 ? Math.sin(((blinkPhase - 4.16) / 0.24) * Math.PI) : 0
   const isWink = state.expression === 'wink'
   const isSleepy = state.expression === 'sleepy'
+  const hasConnectionKick =
+    state.connectionReaction === 'disconnect-surprised' ||
+    state.connectionReaction === 'reconnect-recover'
+  const connectionPulse = Math.sin(
+    Math.PI * (state.connectionReactionProgress ?? 0)
+  )
+  const connectionWiggle =
+    state.connectionReaction === 'reconnect-happy'
+      ? Math.sin((state.connectionReactionProgress ?? 0) * Math.PI * 6) *
+        connectionPulse
+      : 0
+  const connectionDizzy =
+    state.connectionReaction === 'disconnect-dizzy'
+      ? Math.sin((state.connectionReactionProgress ?? 0) * Math.PI * 4) * 0.13
+      : 0
   return {
     outfit: outfit.code,
     face: state.isOffline
@@ -98,20 +123,25 @@ export const avatarState = async (
     ),
     time: t,
     look,
-    yaw: look[0] * 0.8 + Math.sin(t * 0.5) * 0.025,
+    yaw: look[0] * 0.8 + Math.sin(t * 0.5) * 0.025 + connectionWiggle * 0.035,
     roll:
-      state.expression === 'dizzy'
-        ? Math.sin(t * 11) * 0.13
-        : state.isThinking
-          ? 0.06
-          : isWink
-            ? 0.09
-            : Math.sin(t * 0.7) * 0.018,
-    squash: state.isOffline ? 0 : Math.sin(t * 1.65) * (isSleepy ? 0.3 : 0.1),
+      state.connectionReaction === 'disconnect-dizzy'
+        ? connectionDizzy
+        : state.expression === 'dizzy'
+          ? Math.sin(t * 11) * 0.13
+          : state.isThinking
+            ? 0.06
+            : isWink
+              ? 0.09
+              : Math.sin(t * 0.7) * 0.018 + connectionWiggle * 0.06,
+    squash: state.isOffline
+      ? 0
+      : Math.sin(t * 1.65) * (isSleepy ? 0.3 : 0.1) +
+        (hasConnectionKick ? connectionPulse * 0.12 : 0),
     blink: state.isOffline || isSleepy || isWink ? 0 : blink,
     dead: state.isOffline ? 1 : 0,
     fall: state.isOffline ? 1 : 0,
-    lift: 0,
+    lift: hasConnectionKick ? connectionPulse * 0.035 : 0,
     tip: state.isOffline
       ? [1.2, 0.25, 0.86]
       : ['builder', 'designer', 'director', 'money', 'guard'].includes(

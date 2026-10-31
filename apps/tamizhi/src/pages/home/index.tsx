@@ -107,7 +107,8 @@ export default () => {
       onPaletteChange={setPalette}
       onAnimatedChange={setIsAnimated}
       onOfflineChange={value => {
-        chat.stop()
+        if (value === isOffline) return
+        if (value) chat.stop()
         setIsOffline(value)
       }}
       onInstantChange={setIsInstant}
