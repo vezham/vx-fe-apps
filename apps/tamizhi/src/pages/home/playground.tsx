@@ -1,4 +1,5 @@
-import { Button, Switch } from '@vezham/react-v3'
+import { AltArrowDown } from '@vezham/icons-react'
+import { Button, Dropdown, Switch } from '@vezham/react-v3'
 
 import { COLOURS, EXPRESSIONS, OUTFITS, PALETTE_COLOURS } from './avatar-data'
 import type { Expression, Outfit } from './avatar-data'
@@ -43,58 +44,78 @@ export const Playground = ({
   <div className="tamizhi-playground">
     <section>
       <h2>Outfit</h2>
-      <div
-        className="tamizhi-playground__pills"
-        role="group"
-        aria-label="Outfit">
-        {OUTFITS.map(item => (
-          <Button
-            key={item.id}
-            size="sm"
-            variant="ghost"
-            aria-pressed={outfit === item.id}
-            onPress={() => onOutfitChange(item.id)}>
-            <span
-              className="tamizhi-playground__outfit-dot"
-              style={{ background: PALETTE_COLOURS[item.palette] }}
-              aria-hidden="true"
-            />
-            {item.label}
-          </Button>
-        ))}
-      </div>
+      <Dropdown>
+        <Dropdown.Trigger
+          className="tamizhi-playground__select"
+          aria-label="Choose outfit">
+          <span
+            className="tamizhi-playground__outfit-dot"
+            style={{
+              background:
+                PALETTE_COLOURS[
+                  OUTFITS.find(item => item.id === outfit)?.palette ??
+                    'persimmon'
+                ]
+            }}
+            aria-hidden="true"
+          />
+          {OUTFITS.find(item => item.id === outfit)?.label}
+          <AltArrowDown size={16} aria-hidden="true" />
+        </Dropdown.Trigger>
+        <Dropdown.Popover className="tamizhi-playground__menu">
+          <Dropdown.Menu
+            aria-label="Outfit"
+            selectionMode="single"
+            selectedKeys={[outfit]}>
+            {OUTFITS.map(item => (
+              <Dropdown.Item
+                key={item.id}
+                id={item.id}
+                textValue={item.label}
+                onAction={() => onOutfitChange(item.id)}>
+                <span
+                  className="tamizhi-playground__outfit-dot"
+                  style={{ background: PALETTE_COLOURS[item.palette] }}
+                  aria-hidden="true"
+                />
+                {item.label}
+                <Dropdown.ItemIndicator />
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown.Popover>
+      </Dropdown>
     </section>
     <section>
       <h2>Expression</h2>
-      <div
-        className="tamizhi-playground__pills tamizhi-playground__pills--expressions"
-        role="group"
-        aria-label="Expression">
-        {EXPRESSIONS.map(item => (
-          <Button
-            key={item.id}
-            size="sm"
-            variant="ghost"
-            aria-pressed={expression === item.id}
-            onPress={() =>
-              onExpressionChange(expression === item.id ? 'neutral' : item.id)
-            }>
-            {item.label}
-          </Button>
-        ))}
-      </div>
+      <Dropdown>
+        <Dropdown.Trigger
+          className="tamizhi-playground__select"
+          aria-label="Choose expression">
+          {EXPRESSIONS.find(item => item.id === expression)?.label}
+          <AltArrowDown size={16} aria-hidden="true" />
+        </Dropdown.Trigger>
+        <Dropdown.Popover className="tamizhi-playground__menu">
+          <Dropdown.Menu
+            aria-label="Expression"
+            selectionMode="single"
+            selectedKeys={[expression]}>
+            {EXPRESSIONS.map(item => (
+              <Dropdown.Item
+                key={item.id}
+                id={item.id}
+                textValue={item.label}
+                onAction={() => onExpressionChange(item.id)}>
+                {item.label}
+                <Dropdown.ItemIndicator />
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown.Popover>
+      </Dropdown>
     </section>
     <section>
-      <div className="tamizhi-playground__section-heading">
-        <h2>Colour</h2>
-        <Button
-          size="sm"
-          variant="ghost"
-          aria-label="Use outfit default colour"
-          onPress={() => onPaletteChange(undefined)}>
-          Outfit default
-        </Button>
-      </div>
+      <h2>Colour</h2>
       <div
         className="tamizhi-playground__colours"
         role="group"

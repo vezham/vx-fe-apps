@@ -420,16 +420,15 @@ test.describe('tamizhi', () => {
       ['Builder', 'builder'],
       ['Bug finder', 'bug']
     ]) {
-      await playground
-        .getByRole('group', { name: 'Outfit', exact: true })
-        .getByRole('button', { name, exact: true })
-        .click()
+      await playground.getByRole('button', { name: 'Choose outfit' }).click()
+      await playground.getByRole('menuitemradio', { name, exact: true }).click()
       await expect(avatar).toHaveAttribute('data-rendered-outfit', id, {
         timeout: 30000
       })
       expect((await avatar.screenshot()).equals(resting)).toBe(false)
     }
-    await playground.getByRole('button', { name: 'Wink', exact: true }).click()
+    await playground.getByRole('button', { name: 'Choose expression' }).click()
+    await playground.getByRole('menuitemradio', { name: 'Wink' }).click()
     await expect(avatar).toHaveAttribute('data-rendered-expression', 'wink')
     await page.getByRole('button', { name: 'New bot', exact: true }).click()
     await page.getByRole('textbox', { name: /^Name/ }).fill('Kitchen helper')
@@ -453,12 +452,12 @@ test.describe('tamizhi', () => {
         .getByRole('button', { name: 'Playground', exact: true })
         .click()
       const playground = page.locator('#tamizhi-playground')
+      await playground.getByRole('button', { name: 'Choose outfit' }).click()
+      await playground.getByRole('menuitemradio', { name: 'Chef' }).click()
       await playground
-        .getByRole('button', { name: 'Chef', exact: true })
+        .getByRole('button', { name: 'Choose expression' })
         .click()
-      await playground
-        .getByRole('button', { name: 'Wink', exact: true })
-        .click()
+      await playground.getByRole('menuitemradio', { name: 'Wink' }).click()
       for (const pixels of [72, 44, 28]) {
         const preview = playground.getByRole('figure', {
           name: `${pixels}px avatar preview`,
@@ -486,7 +485,7 @@ test.describe('tamizhi', () => {
         .poll(async () => (await preview.screenshot()).equals(honey))
         .toBe(false)
       await playground
-        .getByRole('button', { name: 'Use outfit default colour' })
+        .getByRole('button', { name: 'Honey', exact: true })
         .click()
       await expect(
         playground.getByRole('button', { name: 'Honey', exact: true })
@@ -496,8 +495,9 @@ test.describe('tamizhi', () => {
         .poll(async () => (await preview.screenshot()).equals(honey))
         .toBe(true)
       await playground
-        .getByRole('button', { name: 'Neutral', exact: true })
+        .getByRole('button', { name: 'Choose expression' })
         .click()
+      await playground.getByRole('menuitemradio', { name: 'Neutral' }).click()
       await preview.scrollIntoViewIfNeeded()
       await expect(preview.locator('.tamizhi-companion')).toHaveAttribute(
         'data-rendered-expression',
