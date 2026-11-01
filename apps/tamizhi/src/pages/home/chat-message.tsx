@@ -14,7 +14,7 @@ const copyText = async (text: string) => {
       await navigator.clipboard.writeText(text)
       return
     } catch {
-      // Fall through to the selection-based copy for restricted origins.
+      // vx-bot/NOTE: Fall through to selection-based copy for restricted origins.
     }
   }
 

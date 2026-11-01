@@ -300,10 +300,12 @@ export const Companion = ({
                 const bounds = element.getBoundingClientRect()
                 if (targetBounds) {
                   const dx =
-                    targetBounds.left + targetBounds.width / 2 -
+                    targetBounds.left +
+                    targetBounds.width / 2 -
                     (bounds.left + bounds.width / 2)
                   const dy =
-                    targetBounds.top + targetBounds.height / 2 -
+                    targetBounds.top +
+                    targetBounds.height / 2 -
                     (bounds.top + bounds.height / 2)
                   const distance = Math.hypot(dx, dy) || 1
                   look = [(dx / distance) * 0.05, (-dy / distance) * 0.045]

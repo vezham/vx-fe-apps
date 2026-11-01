@@ -28,6 +28,7 @@ const ignores = [
   '**/.next/**',
   '**/.vezham',
   '**/.nx',
+  'apps/tamizhi/public/momo/**',
   '**/lint-staged.config.cjs',
   '**/routeTree.gen.ts',
   '**/src/generated/**',

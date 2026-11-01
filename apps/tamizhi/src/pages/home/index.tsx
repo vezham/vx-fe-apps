@@ -61,7 +61,9 @@ export default () => {
   useLayoutEffect(() => {
     const updateAvatarPosition = () => {
       const mainElement = main.current
-      const slot = hasMessages ? chatAvatarSlot.current : welcomeAvatarSlot.current
+      const slot = hasMessages
+        ? chatAvatarSlot.current
+        : welcomeAvatarSlot.current
       if (!mainElement || !slot) return
 
       const mainBounds = mainElement.getBoundingClientRect()
