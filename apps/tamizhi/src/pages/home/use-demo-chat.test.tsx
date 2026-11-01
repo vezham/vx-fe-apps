@@ -99,4 +99,30 @@ describe('Tamizhi local conversations', () => {
     expect(result.current.messages[1].text).toContain('tomato and egg toast')
     expect(result.current.messages[1].outfit).toBe('cook')
   })
+
+  it('uses route selection and cancels a stream when leaving its conversation', () => {
+    const initialProps: { chatId: string | null } = { chatId: null }
+    const hook = renderHook(
+      ({ chatId }: { chatId: string | null }) => useDemoChat(false, chatId),
+      { initialProps }
+    )
+    act(() => vi.advanceTimersByTime(0))
+    let createdId: string | undefined
+    act(() => {
+      createdId = hook.result.current.send('Help me plan today')
+    })
+    expect(createdId).toBeTruthy()
+    expect(hook.result.current.activeId).toBeNull()
+    hook.rerender({ chatId: createdId ?? null })
+    expect(hook.result.current.isStreaming).toBe(true)
+    act(() => vi.advanceTimersByTime(70))
+    const partial = hook.result.current.messages[1].text
+
+    hook.rerender({ chatId: null })
+    expect(hook.result.current.messages).toHaveLength(0)
+    expect(hook.result.current.isStreaming).toBe(false)
+    act(() => vi.advanceTimersByTime(5000))
+    hook.rerender({ chatId: createdId ?? null })
+    expect(hook.result.current.messages[1].text).toBe(partial)
+  })
 })

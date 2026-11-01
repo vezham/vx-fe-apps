@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useEffectEvent, useRef, useState } from 'react'
 
 import { OUTFITS, detectOutfit } from './avatar-data'
 import { createDemoReply, detectPersona } from './demo'
@@ -55,14 +55,19 @@ const readConversations = (): Conversation[] => {
     .slice(0, 24)
 }
 
-export const useDemoChat = (isInstant = false) => {
+export const useDemoChat = (
+  isInstant = false,
+  selectedChatId?: string | null
+) => {
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [activeId, setActiveId] = useState<string | null>(null)
+  const [sessionChatId, setActiveId] = useState<string | null>(null)
+  const activeId = selectedChatId === undefined ? sessionChatId : selectedChatId
   const [isStreaming, setIsStreaming] = useState(false)
   const [isReady, setIsReady] = useState(false)
   const [isSaved, setIsSaved] = useState(true)
   const timer = useRef<ReturnType<typeof setInterval> | null>(null)
   const busy = useRef(false)
+  const streamingChatId = useRef<string | null>(null)
   const active = conversations.find(chat => chat.id === activeId)
   const messages = active?.messages ?? []
   const persona = messages[messages.length - 1]?.persona ?? 'helper'
@@ -99,6 +104,7 @@ export const useDemoChat = (isInstant = false) => {
     if (timer.current) clearInterval(timer.current)
     timer.current = null
     busy.current = false
+    streamingChatId.current = null
     setIsStreaming(false)
     setConversations(chats =>
       chats.map(chat => ({
@@ -111,6 +117,14 @@ export const useDemoChat = (isInstant = false) => {
       }))
     )
   }
+
+  const stopInactiveStream = useEffectEvent(() => {
+    if (streamingChatId.current && streamingChatId.current !== activeId) stop()
+  })
+
+  useEffect(() => {
+    stopInactiveStream()
+  }, [activeId])
 
   const streamReply = (
     chatId: string,
@@ -126,6 +140,7 @@ export const useDemoChat = (isInstant = false) => {
     const words = reply.text.match(/\S+\s*/g) ?? []
     let position = 0
     busy.current = true
+    streamingChatId.current = chatId
     setIsStreaming(true)
     const assistant: Message = {
       id,
@@ -144,6 +159,7 @@ export const useDemoChat = (isInstant = false) => {
     )
     if (isInstant) {
       busy.current = false
+      streamingChatId.current = null
       setIsStreaming(false)
       return
     }
@@ -205,6 +221,7 @@ export const useDemoChat = (isInstant = false) => {
       )
     setActiveId(chatId)
     streamReply(chatId, history, prompt, selectedPersona)
+    return chatId
   }
 
   const retry = () => {
