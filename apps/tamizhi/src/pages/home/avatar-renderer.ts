@@ -72,18 +72,17 @@ export interface AvatarState {
   isDark: boolean
 }
 
-export const avatarState = async (
+export const buildAvatarRenderState = (
   state: AvatarState,
   time: number,
   look: number[],
-  animated: boolean
-): Promise<RenderState> => {
-  const engine = await loadEngine()
+  animated: boolean,
+  palettes: Record<string, string[]>
+): RenderState => {
   const outfit = OUTFITS.find(item => item.id === state.outfit) ?? OUTFITS[0]
   const palette =
-    engine.PALETTES[
-      state.isOffline ? 'ash' : (state.palette ?? outfit.palette)
-    ] ?? engine.PALETTES.persimmon
+    palettes[state.isOffline ? 'ash' : (state.palette ?? outfit.palette)] ??
+    palettes.persimmon
   const expression =
     EXPRESSIONS.find(item => item.id === state.expression) ?? EXPRESSIONS[0]
   const t = animated ? time : 0
@@ -178,4 +177,14 @@ export const avatarState = async (
     legL: [0, 0, 0],
     legR: [0, 0, 0]
   }
+}
+
+export const avatarState = async (
+  state: AvatarState,
+  time: number,
+  look: number[],
+  animated: boolean
+): Promise<RenderState> => {
+  const engine = await loadEngine()
+  return buildAvatarRenderState(state, time, look, animated, engine.PALETTES)
 }

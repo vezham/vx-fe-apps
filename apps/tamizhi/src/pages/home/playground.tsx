@@ -1,5 +1,5 @@
 import { AltArrowDown } from '@vezham/icons-react'
-import { Button, Dropdown, Switch } from '@vezham/react-v3'
+import { Button, Dropdown, Switch, Tabs } from '@vezham/react-v3'
 
 import { COLOURS, EXPRESSIONS, OUTFITS, PALETTE_COLOURS } from './avatar-data'
 import type { Expression, Outfit } from './avatar-data'
@@ -139,47 +139,41 @@ export const Playground = ({
     </section>
     <section>
       <h2>Connection</h2>
-      <div
-        className="tamizhi-playground__segment"
-        role="group"
-        aria-label="Connection">
-        <Button
-          size="sm"
-          variant="ghost"
-          aria-pressed={!isOffline}
-          onPress={() => onOfflineChange(false)}>
-          Online
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          aria-pressed={isOffline}
-          onPress={() => onOfflineChange(true)}>
-          Offline
-        </Button>
-      </div>
+      <Tabs
+        selectedKey={isOffline ? 'offline' : 'online'}
+        onSelectionChange={key => onOfflineChange(key === 'offline')}>
+        <Tabs.ListContainer>
+          <Tabs.List aria-label="Connection">
+            <Tabs.Tab id="online">
+              Online
+              <Tabs.Indicator />
+            </Tabs.Tab>
+            <Tabs.Tab id="offline">
+              Offline
+              <Tabs.Indicator />
+            </Tabs.Tab>
+          </Tabs.List>
+        </Tabs.ListContainer>
+      </Tabs>
     </section>
     <section>
       <h2>Replies</h2>
-      <div
-        className="tamizhi-playground__segment"
-        role="group"
-        aria-label="Replies">
-        <Button
-          size="sm"
-          variant="ghost"
-          aria-pressed={!isInstant}
-          onPress={() => onInstantChange(false)}>
-          Stream
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          aria-pressed={isInstant}
-          onPress={() => onInstantChange(true)}>
-          Instant
-        </Button>
-      </div>
+      <Tabs
+        selectedKey={isInstant ? 'instant' : 'stream'}
+        onSelectionChange={key => onInstantChange(key === 'instant')}>
+        <Tabs.ListContainer>
+          <Tabs.List aria-label="Replies">
+            <Tabs.Tab id="stream">
+              Stream
+              <Tabs.Indicator />
+            </Tabs.Tab>
+            <Tabs.Tab id="instant">
+              Instant
+              <Tabs.Indicator />
+            </Tabs.Tab>
+          </Tabs.List>
+        </Tabs.ListContainer>
+      </Tabs>
     </section>
     <section>
       <Switch isSelected={isAnimated} onChange={onAnimatedChange}>

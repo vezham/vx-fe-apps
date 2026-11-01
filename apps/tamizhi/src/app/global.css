@@ -599,33 +599,6 @@
   outline-offset: 0.1875rem;
 }
 
-.tamizhi-playground__segment {
-  display: flex;
-  padding: 0.1875rem;
-  border-radius: 0.625rem;
-  background: var(--default);
-}
-
-.tamizhi-playground__segment > button {
-  min-width: 0;
-  height: 1.75rem;
-  flex: 1;
-  border-radius: 0.4375rem;
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 500;
-  transition:
-    background-color 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 120ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    color 120ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.tamizhi-playground__segment > button[aria-pressed='true'] {
-  background: var(--surface);
-  color: var(--foreground);
-  box-shadow: var(--surface-shadow);
-}
-
 .tamizhi-playground__credit {
   margin-top: auto;
 }

@@ -385,9 +385,7 @@ test.describe('tamizhi', () => {
     await expect(
       page.locator('.tamizhi-welcome__stage [data-animated="false"]')
     ).toBeVisible()
-    await playground
-      .getByRole('button', { name: 'Offline', exact: true })
-      .click()
+    await playground.getByRole('tab', { name: 'Offline', exact: true }).click()
     await page.keyboard.press('Escape')
     await expect(
       page.getByRole('textbox', { name: 'Message Tamizhi' })
@@ -505,7 +503,7 @@ test.describe('tamizhi', () => {
       )
       const online = await preview.screenshot()
       await playground
-        .getByRole('button', { name: 'Offline', exact: true })
+        .getByRole('tab', { name: 'Offline', exact: true })
         .click()
       await preview.scrollIntoViewIfNeeded()
       await expect
@@ -548,9 +546,7 @@ test.describe('tamizhi', () => {
     await expect(key).toHaveValue('')
     await key.fill(previewKey)
     await playground.getByRole('button', { name: 'Save API key' }).click()
-    await playground
-      .getByRole('button', { name: 'Instant', exact: true })
-      .click()
+    await playground.getByRole('tab', { name: 'Instant', exact: true }).click()
     await page
       .getByRole('textbox', { name: 'Message Tamizhi' })
       .fill('Suggest a quick dinner recipe')
