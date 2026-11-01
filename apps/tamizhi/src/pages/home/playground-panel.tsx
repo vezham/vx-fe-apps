@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { ReactNode, RefObject } from 'react'
+import type { ReactNode } from 'react'
 
 import { Maximize, Minimize } from '@vezham/icons-react'
 import { Sheet } from '@vezham/react-pro-v3'
@@ -12,15 +12,13 @@ interface Props {
   isOpen: boolean
   isCompact: boolean
   onOpenChange: (open: boolean) => void
-  triggerRef: RefObject<HTMLButtonElement | null>
 }
 
 export const PlaygroundPanel = ({
   children,
   isOpen,
   isCompact,
-  onOpenChange,
-  triggerRef
+  onOpenChange
 }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -29,9 +27,6 @@ export const PlaygroundPanel = ({
       <Sheet
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        onAnimationEnd={open => {
-          if (!open) triggerRef.current?.focus()
-        }}
         placement="bottom"
         isHandleOnly
         shouldAutoFocus>

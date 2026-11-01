@@ -1,7 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
-
-import Page from '@pages/home'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
-  component: Page
+  beforeLoad: () => {
+    throw redirect({
+      to: '/chat/$chatId',
+      params: { chatId: 'new' }
+    })
+  }
 })

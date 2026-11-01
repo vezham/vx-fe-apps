@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApiHeartbeatRouteRouteImport } from './routes/api/heartbeat/route'
 import { Route as ApiPulseRouteRouteImport } from './routes/api/pulse/route'
+import { Route as ChatChatIdRouteImport } from './routes/chat.$chatId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,6 +25,11 @@ const IndexRoute = IndexRouteImport.update({
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
   path: '/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -40,40 +47,74 @@ const ApiPulseRouteRoute = ApiPulseRouteRouteImport.update({
   path: '/api/pulse',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatChatIdRoute = ChatChatIdRouteImport.update({
+  id: '/$chatId',
+  path: '/$chatId',
+  getParentRoute: () => ChatRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/chat': typeof ChatRouteWithChildren
   '/settings': typeof SettingsRoute
   '/api/heartbeat': typeof ApiHeartbeatRouteRoute
   '/api/pulse': typeof ApiPulseRouteRoute
+  '/chat/$chatId': typeof ChatChatIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/chat': typeof ChatRouteWithChildren
   '/settings': typeof SettingsRoute
   '/api/heartbeat': typeof ApiHeartbeatRouteRoute
   '/api/pulse': typeof ApiPulseRouteRoute
+  '/chat/$chatId': typeof ChatChatIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
+  '/chat': typeof ChatRouteWithChildren
   '/settings': typeof SettingsRoute
   '/api/heartbeat': typeof ApiHeartbeatRouteRoute
   '/api/pulse': typeof ApiPulseRouteRoute
+  '/chat/$chatId': typeof ChatChatIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$' | '/settings' | '/api/heartbeat' | '/api/pulse'
+  fullPaths:
+    | '/'
+    | '/$'
+    | '/chat'
+    | '/settings'
+    | '/api/heartbeat'
+    | '/api/pulse'
+    | '/chat/$chatId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/settings' | '/api/heartbeat' | '/api/pulse'
-  id: '__root__' | '/' | '/$' | '/settings' | '/api/heartbeat' | '/api/pulse'
+  to:
+    | '/'
+    | '/$'
+    | '/chat'
+    | '/settings'
+    | '/api/heartbeat'
+    | '/api/pulse'
+    | '/chat/$chatId'
+  id:
+    | '__root__'
+    | '/'
+    | '/$'
+    | '/chat'
+    | '/settings'
+    | '/api/heartbeat'
+    | '/api/pulse'
+    | '/chat/$chatId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
+  ChatRoute: typeof ChatRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   ApiHeartbeatRouteRoute: typeof ApiHeartbeatRouteRoute
   ApiPulseRouteRoute: typeof ApiPulseRouteRoute
@@ -93,6 +134,13 @@ declare module '@tanstack/react-router' {
       path: '/$'
       fullPath: '/$'
       preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -116,12 +164,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPulseRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/$chatId': {
+      id: '/chat/$chatId'
+      path: '/$chatId'
+      fullPath: '/chat/$chatId'
+      preLoaderRoute: typeof ChatChatIdRouteImport
+      parentRoute: typeof ChatRoute
+    }
   }
 }
+
+interface ChatRouteChildren {
+  ChatChatIdRoute: typeof ChatChatIdRoute
+}
+
+const ChatRouteChildren: ChatRouteChildren = {
+  ChatChatIdRoute: ChatChatIdRoute,
+}
+
+const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
+  ChatRoute: ChatRouteWithChildren,
   SettingsRoute: SettingsRoute,
   ApiHeartbeatRouteRoute: ApiHeartbeatRouteRoute,
   ApiPulseRouteRoute: ApiPulseRouteRoute,
