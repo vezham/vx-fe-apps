@@ -21,6 +21,8 @@
     "**/content/**/(generated)/**",
     "**/routeTree.gen.ts",
     "apps*/**/*-mock/**",
+    // vx-bot/NOTE: Vendored Momo engine code is preserved upstream source, not maintained app code.
+    "apps/tamizhi/public/momo/**",
     // vx-bot/NOTE: Legacy implementations are outside this npm-consumer workspace.
     "packages/vx/react/**"
   ],
