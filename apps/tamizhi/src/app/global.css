@@ -8,6 +8,11 @@
   overflow: hidden;
 }
 
+.tamizhi .surface:has(> div > .tamizhi__main) {
+  background: transparent;
+  color: var(--foreground);
+}
+
 @media (width >= 48rem) {
   .tamizhi > .bg-background > header > div > div:first-child {
     flex: 0 0 auto;
@@ -27,6 +32,20 @@
   height: 100%;
   flex: 1;
   flex-direction: column;
+}
+
+.tamizhi__compact-header {
+  position: fixed;
+  z-index: 40;
+  top: 0.75rem;
+  left: 50%;
+  display: none;
+  width: max(0rem, calc(100% - 16.5rem));
+  height: 3rem;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
 .tamizhi__scroll {
@@ -508,6 +527,10 @@
 }
 
 @media (width < 48rem) {
+  .tamizhi__compact-header {
+    display: flex;
+  }
+
   .tamizhi-welcome {
     padding: 0 1rem 2rem;
   }

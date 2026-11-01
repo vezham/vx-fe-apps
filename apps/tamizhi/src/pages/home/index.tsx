@@ -253,9 +253,11 @@ export default () => {
         menuActions={menuActions}>
         <section ref={main} className="tamizhi__main" aria-label="Tamizhi chat">
           {hasMessages && (
-            <h1 className="mb-2 shrink-0 truncate text-base font-semibold md:hidden">
-              {chat.active?.title}
-            </h1>
+            <header className="tamizhi__compact-header">
+              <h1 className="min-w-0 truncate text-center text-base font-semibold">
+                {chat.active?.title}
+              </h1>
+            </header>
           )}
           <div
             className="tamizhi__scroll"
