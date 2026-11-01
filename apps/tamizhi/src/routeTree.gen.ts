@@ -8,16 +8,12 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApiHeartbeatRouteRouteImport } from './routes/api/heartbeat/route'
 import { Route as ApiPulseRouteRouteImport } from './routes/api/pulse/route'
-
-const ProLazyRouteImport = createFileRoute('/pro')()
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,11 +25,6 @@ const SplatRoute = SplatRouteImport.update({
   path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProLazyRoute = ProLazyRouteImport.update({
-  id: '/pro',
-  path: '/pro',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/pro.lazy').then((d) => d.Route))
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -54,7 +45,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/settings': typeof SettingsRoute
-  '/pro': typeof ProLazyRoute
   '/api/heartbeat': typeof ApiHeartbeatRouteRoute
   '/api/pulse': typeof ApiPulseRouteRoute
 }
@@ -62,7 +52,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/settings': typeof SettingsRoute
-  '/pro': typeof ProLazyRoute
   '/api/heartbeat': typeof ApiHeartbeatRouteRoute
   '/api/pulse': typeof ApiPulseRouteRoute
 }
@@ -71,30 +60,21 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/settings': typeof SettingsRoute
-  '/pro': typeof ProLazyRoute
   '/api/heartbeat': typeof ApiHeartbeatRouteRoute
   '/api/pulse': typeof ApiPulseRouteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$' | '/settings' | '/pro' | '/api/heartbeat' | '/api/pulse'
+  fullPaths: '/' | '/$' | '/settings' | '/api/heartbeat' | '/api/pulse'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/settings' | '/pro' | '/api/heartbeat' | '/api/pulse'
-  id:
-    | '__root__'
-    | '/'
-    | '/$'
-    | '/settings'
-    | '/pro'
-    | '/api/heartbeat'
-    | '/api/pulse'
+  to: '/' | '/$' | '/settings' | '/api/heartbeat' | '/api/pulse'
+  id: '__root__' | '/' | '/$' | '/settings' | '/api/heartbeat' | '/api/pulse'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
   SettingsRoute: typeof SettingsRoute
-  ProLazyRoute: typeof ProLazyRoute
   ApiHeartbeatRouteRoute: typeof ApiHeartbeatRouteRoute
   ApiPulseRouteRoute: typeof ApiPulseRouteRoute
 }
@@ -113,13 +93,6 @@ declare module '@tanstack/react-router' {
       path: '/$'
       fullPath: '/$'
       preLoaderRoute: typeof SplatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pro': {
-      id: '/pro'
-      path: '/pro'
-      fullPath: '/pro'
-      preLoaderRoute: typeof ProLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -150,7 +123,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
   SettingsRoute: SettingsRoute,
-  ProLazyRoute: ProLazyRoute,
   ApiHeartbeatRouteRoute: ApiHeartbeatRouteRoute,
   ApiPulseRouteRoute: ApiPulseRouteRoute,
 }

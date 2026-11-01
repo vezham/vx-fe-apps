@@ -9,13 +9,6 @@ export const navigationItems = [
     "iconActive": "vx:home-filled",
     "href": "/",
     "title": "Home"
-  },
-  {
-    "key": "pro",
-    "icon": "vx:library",
-    "iconActive": "vx:library-filled",
-    "href": "/pro",
-    "title": "Pro"
   }
 ] satisfies AppNavigationItem[]
 

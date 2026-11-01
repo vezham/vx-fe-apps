@@ -1,7 +1,7 @@
 import { AltArrowDown } from '@vezham/icons-react'
 import { Dropdown } from '@vezham/react-v3'
 
-import { OUTFITS, detectOutfit } from './avatar-data'
+import { OUTFITS } from './avatar-data'
 import type { Outfit } from './avatar-data'
 
 interface Props {
