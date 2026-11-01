@@ -34,6 +34,7 @@ export default () => {
   const main = useRef<HTMLElement>(null)
   const welcomeAvatarSlot = useRef<HTMLDivElement>(null)
   const chatAvatarSlot = useRef<HTMLDivElement>(null)
+  const composerInput = useRef<HTMLTextAreaElement>(null)
   const scroll = useRef<HTMLDivElement>(null)
   const shouldFollow = useRef(true)
   const hasMessages = chat.messages.length > 0
@@ -44,6 +45,7 @@ export default () => {
     height: 0
   })
   const [avatarPlaced, setAvatarPlaced] = useState(false)
+  const [isListening, setIsListening] = useState(false)
   const lastUser = [...chat.messages]
     .reverse()
     .find(message => message.role === 'user')
@@ -91,6 +93,7 @@ export default () => {
   const newChat = () => {
     chat.newChat()
     setIsMenuOpen(false)
+    setIsListening(false)
     setManualOutfit(null)
     setBotName('Tamizhi')
     setExpression('neutral')
@@ -117,6 +120,7 @@ export default () => {
         setManualOutfit(null)
         setPalette(undefined)
         setExpression('neutral')
+        setIsListening(false)
         chat.selectChat(id)
         setIsMenuOpen(false)
       }}
@@ -128,6 +132,7 @@ export default () => {
         setManualOutfit(null)
         setPalette(undefined)
         setExpression('neutral')
+        setIsListening(false)
         chat.send(example.prompt, example.persona, true, example.title)
       }}
     />
@@ -270,9 +275,11 @@ export default () => {
             outfit={outfit}
             expression={expression}
             palette={palette}
+            isListening={isListening}
             isThinking={chat.isStreaming}
             isAnimated={isAnimated}
             isOffline={isOffline}
+            focusTarget={composerInput.current}
           />
         </div>
         {hasMessages && (
@@ -285,6 +292,8 @@ export default () => {
           isReady={chat.isReady}
           isOffline={isOffline}
           avatarSlotRef={chatAvatarSlot}
+          inputRef={composerInput}
+          onListeningChange={setIsListening}
           onSend={send}
           onStop={chat.stop}
         />

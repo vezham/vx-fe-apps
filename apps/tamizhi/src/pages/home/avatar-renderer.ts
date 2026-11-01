@@ -68,6 +68,7 @@ export interface AvatarState {
   connectionReactionProgress?: number
   palette?: string
   isThinking: boolean
+  isListening?: boolean
   isOffline: boolean
   isDark: boolean
 }
@@ -91,6 +92,9 @@ export const buildAvatarRenderState = (
     blinkPhase > 4.16 ? Math.sin(((blinkPhase - 4.16) / 0.24) * Math.PI) : 0
   const isWink = state.expression === 'wink'
   const isSleepy = state.expression === 'sleepy'
+  const isListening = !!state.isListening && !state.isOffline
+  const listeningPulse = Math.sin(t * 4.2)
+  const thinkingPulse = Math.sin(t * 2.8)
   const hasConnectionKick =
     state.connectionReaction === 'disconnect-surprised' ||
     state.connectionReaction === 'reconnect-recover'
@@ -128,19 +132,29 @@ export const buildAvatarRenderState = (
         ? connectionDizzy
         : state.expression === 'dizzy'
           ? Math.sin(t * 11) * 0.13
-          : state.isThinking
-            ? 0.06
-            : isWink
-              ? 0.09
-              : Math.sin(t * 0.7) * 0.018 + connectionWiggle * 0.06,
+          : isListening
+            ? 0.035 + listeningPulse * 0.025
+            : state.isThinking
+              ? 0.045 + thinkingPulse * 0.018
+              : isWink
+                ? 0.09
+                : Math.sin(t * 0.7) * 0.018 + connectionWiggle * 0.06,
     squash: state.isOffline
       ? 0
       : Math.sin(t * 1.65) * (isSleepy ? 0.3 : 0.1) +
+        (isListening ? listeningPulse * 0.14 : 0) +
+        (state.isThinking ? thinkingPulse * 0.07 : 0) +
         (hasConnectionKick ? connectionPulse * 0.12 : 0),
     blink: state.isOffline || isSleepy || isWink ? 0 : blink,
     dead: state.isOffline ? 1 : 0,
     fall: state.isOffline ? 1 : 0,
-    lift: hasConnectionKick ? connectionPulse * 0.035 : 0,
+    lift: hasConnectionKick
+      ? connectionPulse * 0.035
+      : isListening
+        ? Math.max(0, listeningPulse) * 0.012
+        : state.isThinking
+          ? Math.max(0, thinkingPulse) * 0.008
+          : 0,
     tip: state.isOffline
       ? [1.2, 0.25, 0.86]
       : ['builder', 'designer', 'director', 'money', 'guard'].includes(
@@ -150,26 +164,40 @@ export const buildAvatarRenderState = (
         : isSleepy
           ? [0.32, 0.14, 0.95]
           : state.isThinking
-            ? [-0.16, 0.18, 0.97]
+            ? [-0.16 + thinkingPulse * 0.035, 0.18, 0.97]
             : [Math.sin(t * 0.7) * 0.025, 0, 1],
     smile: state.expression === 'happy' ? 1 : 0,
     sleepy: isSleepy ? 1 : 0,
     wink: isWink ? 1 : 0,
     lids: isWink ? [1, 0] : [0, 0],
     glow: state.expression === 'sparkle' ? 1 : 0,
-    eyeScale: state.expression === 'surprised' ? [1.27, 1.02] : [1, 1],
+    eyeScale:
+      state.expression === 'surprised'
+        ? [1.27, 1.02]
+        : isListening
+          ? [1.06, 1.06]
+          : state.isThinking
+            ? [1.035, 1.035]
+            : [1, 1],
     brows:
       state.expression === 'surprised'
         ? [0.09, 0.11, 0.11, 0.09]
-        : state.isThinking
-          ? [0.008, 0.01, 0.028, 0.034]
-          : [0.012, 0.014, 0.014, 0.012],
-    browOn: state.isThinking || state.expression !== 'neutral' ? 1 : 0,
+        : isListening
+          ? [0.025, 0.032, 0.025, 0.032]
+          : state.isThinking
+            ? [0.008, 0.01, 0.028, 0.034]
+            : [0.012, 0.014, 0.014, 0.012],
+    browOn:
+      isListening || state.isThinking || state.expression !== 'neutral' ? 1 : 0,
     restMouth: true,
     small: 0,
     fuzz: 1,
     darkFloor: state.isDark ? 1 : 0,
-    leaf: state.isThinking ? 1 : 0.5,
+    leaf: isListening
+      ? 0.65 + Math.max(0, listeningPulse) * 0.22
+      : state.isThinking
+        ? 0.82 + Math.max(0, thinkingPulse) * 0.18
+        : 0.5,
     glassY: state.outfit === 'tutor' ? (t % 8) * 0.006 : 0,
     hatTilt: Math.sin(t * 0.7) * 0.01,
     bug: 1,

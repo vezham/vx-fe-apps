@@ -38,9 +38,11 @@ interface Props {
   outfit?: Outfit
   expression?: Expression
   palette?: string
+  isListening?: boolean
   isThinking?: boolean
   isAnimated?: boolean
   isOffline?: boolean
+  focusTarget?: HTMLElement | null
   size?: 'small' | 'large'
   previewSize?: 28 | 44 | 72
 }
@@ -50,9 +52,11 @@ export const Companion = ({
   outfit = outfitForPersona(persona),
   expression = 'neutral',
   palette,
+  isListening = false,
   isThinking = false,
   isAnimated = true,
   isOffline = false,
+  focusTarget = null,
   size = 'large',
   previewSize
 }: Props) => {
@@ -64,9 +68,11 @@ export const Companion = ({
     outfit,
     expression,
     palette,
+    isListening,
     isThinking,
     isOffline,
     isAnimated,
+    focusTarget,
     connectionReaction
   })
   const previousOffline = useRef(isOffline)
@@ -76,9 +82,11 @@ export const Companion = ({
       outfit,
       expression,
       palette,
+      isListening,
       isThinking,
       isOffline,
       isAnimated,
+      focusTarget,
       connectionReaction
     }
     redraw.current?.()
@@ -86,9 +94,11 @@ export const Companion = ({
     outfit,
     expression,
     palette,
+    isListening,
     isThinking,
     isOffline,
     isAnimated,
+    focusTarget,
     connectionReaction
   ])
 
@@ -226,8 +236,9 @@ export const Companion = ({
         const draw = async (now: number) => {
           if (cancelled || !renderer || !canvas) return
           try {
+            const { focusTarget, ...renderSettings } = latest.current
             const settings = {
-              ...latest.current,
+              ...renderSettings,
               isDark: document.documentElement.classList.contains('dark')
             }
             const key = JSON.stringify(settings)
@@ -282,6 +293,22 @@ export const Companion = ({
               const keepOfflineLook =
                 reaction === 'reconnect-wait' ||
                 reaction === 'reconnect-surprised'
+              let look = animated ? pointer : [0, 0]
+              if (animated && settings.isThinking) look = [-0.045, 0.055]
+              else if (animated && settings.isListening) {
+                const targetBounds = focusTarget?.getBoundingClientRect()
+                const bounds = element.getBoundingClientRect()
+                if (targetBounds) {
+                  const dx =
+                    targetBounds.left + targetBounds.width / 2 -
+                    (bounds.left + bounds.width / 2)
+                  const dy =
+                    targetBounds.top + targetBounds.height / 2 -
+                    (bounds.top + bounds.height / 2)
+                  const distance = Math.hypot(dx, dy) || 1
+                  look = [(dx / distance) * 0.05, (-dy / distance) * 0.045]
+                } else look = [0.035, -0.05]
+              }
               const state = await avatarState(
                 {
                   ...settings,
@@ -302,7 +329,7 @@ export const Companion = ({
                       : settings.expression)
                 },
                 (now - start) / 1000,
-                animated ? pointer : [0, 0],
+                look,
                 animated
               )
               if (cancelled) return
@@ -370,7 +397,11 @@ export const Companion = ({
                       )
                     )
               const renderState =
-                animated && (reacting || settings.isOffline)
+                animated &&
+                (reacting ||
+                  settings.isOffline ||
+                  settings.isListening ||
+                  settings.isThinking)
                   ? smoothMotion(state)
                   : state
               const result =
