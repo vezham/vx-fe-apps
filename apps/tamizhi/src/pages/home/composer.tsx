@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import type { RefObject } from 'react'
 
 import { Button, Form, Label, TextArea, TextField } from '@vezham/react-v3'
 
@@ -6,6 +7,7 @@ interface Props {
   isStreaming: boolean
   isReady: boolean
   isOffline: boolean
+  avatarSlotRef: RefObject<HTMLDivElement | null>
   onSend: (prompt: string) => void
   onStop: () => void
 }
@@ -14,6 +16,7 @@ export const Composer = ({
   isStreaming,
   isReady,
   isOffline,
+  avatarSlotRef,
   onSend,
   onStop
 }: Props) => {
@@ -34,6 +37,11 @@ export const Composer = ({
           send()
         }}
         className="tamizhi-composer__form">
+        <div
+          className="tamizhi__perch"
+          ref={avatarSlotRef}
+          aria-hidden="true"
+        />
         <TextField
           value={text}
           onChange={setText}

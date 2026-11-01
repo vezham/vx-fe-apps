@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { HamburgerMenu, Tuning } from '@vezham/icons-react'
 import { Button, Drawer, useMediaQuery } from '@vezham/react-v3'
@@ -31,8 +31,19 @@ export default () => {
   const [palette, setPalette] = useState<string | undefined>()
   const [apiKey, setApiKey] = useState('')
   const playgroundTrigger = useRef<HTMLButtonElement>(null)
+  const main = useRef<HTMLElement>(null)
+  const welcomeAvatarSlot = useRef<HTMLDivElement>(null)
+  const chatAvatarSlot = useRef<HTMLDivElement>(null)
   const scroll = useRef<HTMLDivElement>(null)
   const shouldFollow = useRef(true)
+  const hasMessages = chat.messages.length > 0
+  const [avatarRect, setAvatarRect] = useState({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0
+  })
+  const [avatarPlaced, setAvatarPlaced] = useState(false)
   const lastUser = [...chat.messages]
     .reverse()
     .find(message => message.role === 'user')
@@ -44,6 +55,38 @@ export default () => {
     if (scroll.current && shouldFollow.current)
       scroll.current.scrollTop = scroll.current.scrollHeight
   }, [chat.messages])
+
+  useLayoutEffect(() => {
+    const updateAvatarPosition = () => {
+      const mainElement = main.current
+      const slot = hasMessages ? chatAvatarSlot.current : welcomeAvatarSlot.current
+      if (!mainElement || !slot) return
+
+      const mainBounds = mainElement.getBoundingClientRect()
+      const slotBounds = slot.getBoundingClientRect()
+      setAvatarRect({
+        left: slotBounds.left - mainBounds.left,
+        top: slotBounds.top - mainBounds.top,
+        width: slotBounds.width,
+        height: slotBounds.height
+      })
+      setAvatarPlaced(true)
+    }
+
+    updateAvatarPosition()
+    const observer =
+      typeof ResizeObserver === 'undefined'
+        ? null
+        : new ResizeObserver(updateAvatarPosition)
+    if (main.current) observer?.observe(main.current)
+    if (welcomeAvatarSlot.current) observer?.observe(welcomeAvatarSlot.current)
+    if (chatAvatarSlot.current) observer?.observe(chatAvatarSlot.current)
+    window.addEventListener('resize', updateAvatarPosition)
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', updateAvatarPosition)
+    }
+  }, [hasMessages])
 
   const newChat = () => {
     chat.newChat()
@@ -121,7 +164,7 @@ export default () => {
       <aside className="tamizhi__sidebar" aria-label="Conversations">
         {sidebar}
       </aside>
-      <section className="tamizhi__main" aria-label="Tamizhi chat">
+      <section ref={main} className="tamizhi__main" aria-label="Tamizhi chat">
         <header className="tamizhi__header">
           <div className="flex min-w-0 items-center gap-2">
             <IconButton
@@ -175,19 +218,11 @@ export default () => {
                   element.clientHeight <
                 100
           }}>
-          {chat.messages.length === 0 ? (
+          {!hasMessages ? (
             <section
               className="tamizhi-welcome"
               aria-labelledby="welcome-title">
-              <div className="tamizhi-welcome__stage">
-                <Companion
-                  outfit={outfit}
-                  expression={expression}
-                  palette={palette}
-                  isAnimated={isAnimated}
-                  isOffline={isOffline}
-                />
-              </div>
+              <div className="tamizhi-welcome__stage" ref={welcomeAvatarSlot} />
               <BotPicker
                 name={botName}
                 outfit={outfit}
@@ -224,25 +259,32 @@ export default () => {
             </section>
           )}
         </div>
-        {chat.messages.length > 0 && (
-          <div className="tamizhi__perch">
-            <Companion
-              outfit={outfit}
-              expression={expression}
-              palette={palette}
-              isThinking={chat.isStreaming}
-              isAnimated={isAnimated}
-              isOffline={isOffline}
-            />
-            <span className="sr-only" role="status">
-              {outfitInfo.name} mode
-            </span>
-          </div>
+        <div
+          className="tamizhi__companion-layer"
+          aria-hidden="true"
+          style={{
+            ...avatarRect,
+            visibility: avatarPlaced ? 'visible' : 'hidden'
+          }}>
+          <Companion
+            outfit={outfit}
+            expression={expression}
+            palette={palette}
+            isThinking={chat.isStreaming}
+            isAnimated={isAnimated}
+            isOffline={isOffline}
+          />
+        </div>
+        {hasMessages && (
+          <span className="sr-only" role="status">
+            {outfitInfo.name} mode
+          </span>
         )}
         <Composer
           isStreaming={chat.isStreaming}
           isReady={chat.isReady}
           isOffline={isOffline}
+          avatarSlotRef={chatAvatarSlot}
           onSend={send}
           onStop={chat.stop}
         />
