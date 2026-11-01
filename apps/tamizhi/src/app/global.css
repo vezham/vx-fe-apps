@@ -624,7 +624,6 @@
 .tamizhi__mobile-sidebar {
   width: min(18.75rem, 84vw);
   padding: 0;
-  background: transparent;
 }
 
 .tamizhi__mobile-sidebar .tamizhi-sidebar__brand {

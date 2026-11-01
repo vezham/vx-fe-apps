@@ -19,41 +19,84 @@ export interface Conversation {
   messages: Message[]
 }
 
-export const EXAMPLES: {
+export interface ExampleChat {
+  id: string
   persona: Persona
   title: string
   description: string
   prompt: string
-}[] = [
+}
+
+export const EXAMPLES: ExampleChat[] = [
   {
+    id: 'build',
     persona: 'coder',
     title: 'Build something',
     description: 'From a small idea to a first step',
     prompt: 'Help me build a personal portfolio with React.'
   },
   {
+    id: 'words',
     persona: 'writer',
     title: 'Find the words',
     description: 'A fresh draft, a clearer thought',
     prompt: 'Write a warm introduction for my portfolio.'
   },
   {
+    id: 'plan',
     persona: 'planner',
     title: 'Make a plan',
     description: 'A little structure for a busy day',
     prompt: 'Help me plan a focused and balanced day.'
   },
   {
+    id: 'learn',
     persona: 'tutor',
     title: 'Learn something',
     description: 'Big ideas, simply explained',
     prompt: 'Explain how AI learns, like I am a beginner.'
   },
   {
+    id: 'explore',
     persona: 'explorer',
     title: 'Go somewhere',
     description: 'A small escape, a new perspective',
     prompt: 'Plan a relaxed weekend exploring Chennai.'
+  },
+  {
+    id: 'dinner',
+    persona: 'helper',
+    title: 'Quick dinner',
+    description: 'A simple meal with what you have',
+    prompt: 'Suggest a quick dinner recipe with eggs.'
+  },
+  {
+    id: 'focus-music',
+    persona: 'helper',
+    title: 'A playlist for focus',
+    description: 'A calm soundtrack for the afternoon',
+    prompt: 'Suggest a music playlist for a focused afternoon.'
+  },
+  {
+    id: 'basil',
+    persona: 'helper',
+    title: 'A happier basil plant',
+    description: 'A few ways to help it thrive',
+    prompt: 'Help me care for a basil plant.'
+  },
+  {
+    id: 'debug',
+    persona: 'helper',
+    title: 'Find the bug',
+    description: 'A clear first step for debugging',
+    prompt: 'Help me debug a TypeError in my app.'
+  },
+  {
+    id: 'budget',
+    persona: 'helper',
+    title: 'A simple budget',
+    description: 'Give your monthly spending a shape',
+    prompt: 'Help me make a simple monthly budget.'
   }
 ]
 

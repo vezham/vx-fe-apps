@@ -78,14 +78,14 @@ export default () => {
         setIsMenuOpen(false)
       }}
       onDeleteChat={chat.deleteChat}
-      onExample={(prompt, persona) => {
+      onExample={example => {
         if (isOffline) return
         shouldFollow.current = true
         setIsMenuOpen(false)
         setManualOutfit(null)
         setPalette(undefined)
         setExpression('neutral')
-        chat.send(prompt, persona, true)
+        chat.send(example.prompt, example.persona, true, example.title)
       }}
     />
   )
@@ -127,6 +127,11 @@ export default () => {
             <IconButton
               label="Open conversations"
               className="tamizhi__menu-toggle"
+              aria-expanded={isMenuOpen}
+              aria-controls={
+                isMenuOpen ? 'tamizhi-conversation-drawer' : undefined
+              }
+              aria-haspopup="dialog"
               onPress={() => setIsMenuOpen(true)}>
               <HamburgerMenu size={20} aria-hidden="true" />
             </IconButton>
@@ -258,6 +263,7 @@ export default () => {
         className="tamizhi-overlay">
         <Drawer.Content placement="left">
           <Drawer.Dialog
+            id="tamizhi-conversation-drawer"
             className="tamizhi__mobile-sidebar"
             aria-label="Conversations">
             <Drawer.CloseTrigger />

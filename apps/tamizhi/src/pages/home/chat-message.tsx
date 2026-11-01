@@ -8,6 +8,33 @@ import { Companion } from './companion'
 import type { Message } from './demo'
 import { IconButton } from './icon-button'
 
+const copyText = async (text: string) => {
+  if (typeof navigator.clipboard?.writeText === 'function') {
+    try {
+      await navigator.clipboard.writeText(text)
+      return
+    } catch {
+      // Fall through to the selection-based copy for restricted origins.
+    }
+  }
+
+  const input = document.createElement('textarea')
+  input.value = text
+  input.setAttribute('readonly', '')
+  input.style.position = 'fixed'
+  input.style.top = '0'
+  input.style.left = '-9999px'
+  input.style.fontSize = '16px'
+  document.body.appendChild(input)
+  input.focus()
+  input.select()
+  input.setSelectionRange(0, text.length)
+  const copied = document.execCommand('copy')
+  input.remove()
+
+  if (!copied) throw new Error('Clipboard copy is unavailable')
+}
+
 interface Props {
   message: Message
   isStreaming: boolean
@@ -28,7 +55,7 @@ export const ChatMessage = ({
   const [copyStatus, setCopyStatus] = useState('')
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(
+      await copyText(
         [
           message.text,
           ...(message.tasks?.map(

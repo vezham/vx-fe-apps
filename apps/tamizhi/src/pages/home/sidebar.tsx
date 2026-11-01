@@ -2,7 +2,7 @@ import { Add, TrashBinMinimalistic, VezhamTamizhi } from '@vezham/icons-react'
 import { Button } from '@vezham/react-v3'
 
 import { EXAMPLES } from './demo'
-import type { Conversation, Persona } from './demo'
+import type { Conversation, ExampleChat } from './demo'
 import { IconButton } from './icon-button'
 
 interface Props {
@@ -12,7 +12,7 @@ interface Props {
   onNewChat: () => void
   onSelectChat: (id: string) => void
   onDeleteChat: (id: string) => void
-  onExample: (prompt: string, persona: Persona) => void
+  onExample: (example: ExampleChat) => void
 }
 
 export const Sidebar = ({
@@ -71,34 +71,15 @@ export const Sidebar = ({
         <h2>Examples</h2>
         {EXAMPLES.map(example => (
           <Button
-            key={example.persona}
+            key={example.id}
             variant="ghost"
             className="tamizhi-sidebar__example"
-            onPress={() => onExample(example.prompt, example.persona)}>
+            onPress={() => onExample(example)}>
             <span
               className="tamizhi-sidebar__dot"
               data-persona={example.persona}
             />
             {example.title}
-          </Button>
-        ))}
-        {[
-          ['Quick dinner', 'Suggest a quick dinner recipe with eggs.'],
-          [
-            'A playlist for focus',
-            'Suggest a music playlist for a focused afternoon.'
-          ],
-          ['A happier basil plant', 'Help me care for a basil plant.'],
-          ['Find the bug', 'Help me debug a TypeError in my app.'],
-          ['A simple budget', 'Help me make a simple monthly budget.']
-        ].map(([title, prompt]) => (
-          <Button
-            key={title}
-            variant="ghost"
-            className="tamizhi-sidebar__example"
-            onPress={() => onExample(prompt, 'helper')}>
-            <span className="tamizhi-sidebar__dot" />
-            {title}
           </Button>
         ))}
       </nav>

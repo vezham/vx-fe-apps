@@ -6,6 +6,18 @@ import type { Conversation, Message, Persona } from './demo'
 
 const STORAGE_KEY = 'tamizhi.demo.v1'
 
+const createId = () => {
+  if (typeof crypto !== 'undefined') {
+    if (typeof crypto.randomUUID === 'function') return crypto.randomUUID()
+    if (typeof crypto.getRandomValues === 'function') {
+      return Array.from(crypto.getRandomValues(new Uint32Array(4)), value =>
+        value.toString(36)
+      ).join('-')
+    }
+  }
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
+}
+
 const readConversations = (): Conversation[] => {
   const saved: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
   if (!Array.isArray(saved)) return []
@@ -110,7 +122,7 @@ export const useDemoChat = (isInstant = false) => {
       prompt,
       selectedPersona ?? detectPersona(prompt)
     )
-    const id = crypto.randomUUID()
+    const id = createId()
     const words = reply.text.match(/\S+\s*/g) ?? []
     let position = 0
     busy.current = true
@@ -136,7 +148,7 @@ export const useDemoChat = (isInstant = false) => {
       return
     }
     timer.current = setInterval(() => {
-      position = Math.min(position + 4, words.length)
+      position = Math.min(position + 2, words.length)
       const complete = position === words.length
       setConversations(chats =>
         chats.map(chat =>
@@ -159,16 +171,21 @@ export const useDemoChat = (isInstant = false) => {
         )
       )
       if (complete) stop()
-    }, 35)
+    }, 70)
   }
 
-  const send = (value: string, selectedPersona?: Persona, startNew = false) => {
+  const send = (
+    value: string,
+    selectedPersona?: Persona,
+    startNew = false,
+    conversationTitle?: string
+  ) => {
     const prompt = value.trim().slice(0, 4000)
     if (!prompt || (busy.current && !startNew) || !isReady) return
     if (startNew) stop()
-    const chatId = (startNew ? null : activeId) ?? crypto.randomUUID()
+    const chatId = (startNew ? null : activeId) ?? createId()
     const user: Message = {
-      id: crypto.randomUUID(),
+      id: createId(),
       role: 'user',
       text: prompt,
       persona: selectedPersona ?? detectPersona(prompt),
@@ -178,7 +195,11 @@ export const useDemoChat = (isInstant = false) => {
     if (startNew || !active)
       setConversations(chats =>
         [
-          { id: chatId, title: prompt.slice(0, 48), messages: [] },
+          {
+            id: chatId,
+            title: conversationTitle ?? prompt.slice(0, 48),
+            messages: []
+          },
           ...chats
         ].slice(0, 24)
       )
