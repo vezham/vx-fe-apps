@@ -1,7 +1,6 @@
-import { Add, TrashBinMinimalistic } from '@vezham/icons-react'
+import { Add, TrashBinMinimalistic, VezhamTamizhi } from '@vezham/icons-react'
 import { Button } from '@vezham/react-v3'
 
-import { Companion } from './companion'
 import { EXAMPLES } from './demo'
 import type { Conversation, Persona } from './demo'
 import { IconButton } from './icon-button'
@@ -27,11 +26,12 @@ export const Sidebar = ({
 }: Props) => (
   <div className="tamizhi-sidebar">
     <div className="tamizhi-sidebar__brand">
-      <Companion size="small" isAnimated={false} />
+      <VezhamTamizhi size={32} aria-hidden="true" />
       <span>Tamizhi</span>
     </div>
     <Button
-      variant="ghost"
+      size="lg"
+      variant="primary"
       className="tamizhi-sidebar__new"
       onPress={onNewChat}>
       <Add size={17} aria-hidden="true" />
