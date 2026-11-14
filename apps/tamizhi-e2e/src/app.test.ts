@@ -4,6 +4,12 @@ import { expect, test } from '@vezham/config/playwright/test'
 
 const openToolbarAction = async (page: Page, name: string) => {
   await page.getByRole('button', { name: 'More', exact: true }).click()
+  if ((page.viewportSize()?.width ?? 1440) < 640)
+    await expect(
+      page.locator('[data-slot="sheet-content"]').filter({
+        has: page.getByRole('dialog', { name: 'Toolbar actions', exact: true })
+      })
+    ).toHaveAttribute('data-expanded', 'true')
   await page
     .getByRole('menuitem', { name, exact: true })
     .or(page.getByRole('button', { name, exact: true }))
@@ -403,6 +409,10 @@ test.describe('tamizhi', () => {
     await expect(
       page.locator('.tamizhi__companion-layer [data-animated="false"]')
     ).toBeVisible()
+    // vx-bot/NOTE: Scroll the body without moving the Sheet's swipe-to-dismiss container.
+    await playground
+      .locator('[data-slot="sheet-body"]')
+      .evaluate(body => body.scrollTo({ top: 0 }))
     await playground.getByRole('tab', { name: 'Offline', exact: true }).click()
     await page.keyboard.press('Escape')
     await expect(

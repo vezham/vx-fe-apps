@@ -75,7 +75,7 @@ export const Composer = ({
             setText(value)
             signalListening()
           }}
-          isDisabled={isOffline}
+          isDisabled={!isReady || isOffline}
           className="min-w-0 flex-1">
           <Label className="sr-only">Message Tamizhi</Label>
           <TextArea
