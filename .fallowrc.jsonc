@@ -24,11 +24,11 @@
     // vx-bot/NOTE: Vendored Momo engine code is preserved upstream source, not maintained app code.
     "apps/tamizhi/public/momo/**",
     // vx-bot/NOTE: Legacy implementations are outside this npm-consumer workspace.
-    "packages/vx/react/**"
+    "packages/vx/react/**",
+    // vx-bot/NOTE: Shared styles are consumed by future generated apps.
+    "packages/vx/styles/**"
   ],
   "entry": [
-    // vx-bot/NOTE: Generated apps import these shared stylesheet roots directly.
-    "packages/vx/styles/{index.css,docs/index.css}",
     // vx-bot/NOTE: For Next.js app
     "**/src/app/**/{page,layout,error,global-error,loading,not-found}.tsx",
     "**/src/app/**/route.ts",
@@ -81,6 +81,7 @@
     "next",
     // vx-bot/NOTE: Required peers of @vezham/react-pro-v3 and @vezham/react-v3.
     "@heroui/react",
+    "@heroui/styles",
     "@internationalized/date",
     "@react-aria/utils",
     "motion",
@@ -89,10 +90,15 @@
     "react-resizable-panels",
     "react-stately",
     "tailwind-merge",
+    "tailwindcss",
+    // vx-bot/NOTE: Peer of the retained Vezham v2 package alias.
+    "framer-motion",
     // vx-bot/NOTE: @vezham/config/vite-lib loads this root-supplied declaration plugin.
     "vite-plugin-dts",
     // vx-bot/NOTE: Published packages are declared at root and supplied to app workspaces.
     "@vezham/config",
+    // vx-bot/NOTE: Imported by shared CSS under packages/vx/styles, ignored by Fallow.
+    "@vezham/devtools",
     "@vezham/env",
     "@vezham/react",
     "@vezham/start",

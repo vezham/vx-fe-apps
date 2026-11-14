@@ -1,3 +1,29 @@
+## 27.0.0-alpha.2 (2026-11-14)
+
+### 🚀 Features
+
+- **vx:** add page component styles ([87c32d04](https://github.com/vezham-labs/vx-fe-kit/commit/87c32d04))
+
+### 🏡 Chore
+
+- **vx:** update Fallow dependency exceptions ([3828a3b5](https://github.com/vezham-labs/vx-fe-kit/commit/3828a3b5))
+- **workspace:** ignore future shared styles ([ba151202](https://github.com/vezham-labs/vx-fe-kit/commit/ba151202))
+
+### ❤️ Thank You
+
+- vx-vigneshwaran
+
+## 27.0.0-alpha.1 (2026-11-12)
+
+### 🏡 Chore
+
+- **repo:** upgrade Vezham packages to v27 alpha ([63dea111](https://github.com/vezham-labs/vx-fe-kit/commit/63dea111))
+- **workspace:** update tooling and UI deps ([a156f08d](https://github.com/vezham-labs/vx-fe-kit/commit/a156f08d))
+
+### ❤️ Thank You
+
+- vx-vigneshwaran
+
 ## 26.0.1 (2026-10-31)
 
 ### 🏡 Chore

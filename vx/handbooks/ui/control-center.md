@@ -238,7 +238,7 @@ The overlay owner keeps `isOpen` and `activePanel` state. Render home when
 `activePanel` is `null`; otherwise the outlet resolves the matching entry and
 renders a shared Back header plus that entry's `Panel`.
 
-Use a Pro bottom Sheet below 768px and an anchored popover at larger widths. Close
+Use a HeroUI bottom Sheet below 768px and an anchored popover at larger widths. Close
 the overlay and reset `activePanel` together so reopening starts at home.
 
 ## Styling

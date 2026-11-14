@@ -34,10 +34,10 @@ React Doctor supply-chain API calls remain disabled.
 
 This workspace consumes published `@vezham/*` packages from npm. Fallow analyzes
 workspace-owned code and configuration; it does not require local public-package
-source exports or builds. The shared stylesheet roots under `packages/vx/styles`
-are explicit entry points because generated apps import them directly. Their
-`@vezham/start/styles/docs` import resolves through the installed package's CSS
-export.
+source exports or builds. Fallow ignores `packages/vx/styles/**` because these
+shared styles are consumed by future generated apps and may not be imported by
+the current workspace. The docs stylesheet's `@vezham/start/styles/docs` import
+resolves through the installed package's CSS export.
 
 Keep Next.js in the root development dependencies in both the source workspace
 and workspace-only template. Current Nx build and start commands use the full
@@ -62,9 +62,10 @@ be removed. Keep framework entry points and content collections registered in
 The Fallow dependency exceptions cover these indirect uses:
 
 - `@fontsource/inter` and `@fontsource/jura`: OG font files loaded with
-  `require.resolve`; `@vezham/styles-v3`: imported from the shared CSS entry.
+  `require.resolve`; `@vezham/devtools`, `@vezham/styles-v3`, and `tailwindcss`:
+  imported by the shared styles folder, which is ignored by Fallow.
 - The required peers of `@vezham/react-pro-v3` and `@vezham/react-v3`: HeroUI,
-  React Aria/Stately, date utilities, motion, panels, and Tailwind merge are
+  React Aria/Stately, date utilities, motion, panels, and Tailwind packages are
   supplied at the root for published UI packages. Keep the React Aria versions
   aligned as described in the CLI template baseline.
 - The listed Pro optional peers: retained for the workspace's component demos
@@ -78,9 +79,10 @@ The Fallow dependency exceptions cover these indirect uses:
   The exact names in `ignoreDependencies` were checked against the root manifest.
 - `@testing-library/jest-dom`: the shared Vitest setup imports matchers from the
   root development dependency. Keep that declaration at the root.
-- `@vezham/react-v2`: intentionally retained as a build-time demo dependency.
-  Revisit its placement if deployment starts installing production dependencies
-  to execute code that imports it directly.
+- `@vezham/react-v2`: intentionally retained as a build-time demo dependency;
+  `framer-motion` is its required peer. Revisit their placement if deployment
+  starts installing production dependencies to execute code that imports them
+  directly.
 
 Use exact package names. `ignoreDependencies` suppresses both unused and
 unlisted dependency findings, so keep these packages declared and review the

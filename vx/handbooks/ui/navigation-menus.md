@@ -1,6 +1,6 @@
 # Navigation menus
 
-Below 640px, the application menu uses a HeroUI Pro bottom Sheet. On larger
+Below 640px, the application menu uses a HeroUI bottom Sheet. On larger
 screens it retains its Dropdown and nested popovers. This presentation is owned
 by the React package; apps keep their `vx.nav.yaml` menu configuration and action
 handlers.

@@ -8,8 +8,8 @@ kept local so agents can choose the right primitive while offline. Update it
 when either dependency changes.
 
 ```tsx
-import { Command, ContextMenu, Sheet } from '@vezham/react-pro-v3'
-import { Button, Card, Input, TextField } from '@vezham/react-v3'
+import { Command, ContextMenu } from '@vezham/react-pro-v3'
+import { Button, Card, Input, Sheet, TextField } from '@vezham/react-v3'
 ```
 
 Use the Vezham root imports for base and Pro components.
@@ -87,7 +87,7 @@ type declarations or current component documentation.
 | Feedback                 | `Alert`, `AlertDialog`, `ErrorMessage`, `FieldError`, `ProgressBar`, `ProgressCircle`, `Skeleton`, `Spinner`, `Toast` |
 | Display                  | `Avatar`, `Badge`, `Card`, `Chip`, `EmptyState`, `Kbd`, `Meter`, `Surface`, `Typography`                              |
 | Navigation               | `Accordion`, `Breadcrumbs`, `Link`, `Pagination`, `Tabs`                                                              |
-| Overlays and collections | `Drawer`, `Modal`, `Popover`, `Tooltip`, `Dropdown`, `Menu`, `ListBox`, `Table`                                       |
+| Overlays and collections | `Drawer`, `Modal`, `Sheet`, `Popover`, `Tooltip`, `Dropdown`, `Menu`, `ListBox`, `Table`                              |
 | Structure and utilities  | `Description`, `Fieldset`, `Form`, `Header`, `Label`, `ScrollShadow`, `Separator`                                     |
 
 ### Pro Components
@@ -96,7 +96,7 @@ type declarations or current component documentation.
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Application navigation | `AppLayout`, `Command`, `ContextMenu`, `Navbar`, `Segment`, `Sidebar`, `Stepper`                                                                                           |
 | Data display           | `ActionBar`, `Agenda`, `DataGrid`, `FileTree`, `FloatingToc`, `ItemCard`, `ItemCardGroup`, `Kanban`, `KPIGroup`, `ListView`, `Timeline`, `Widget`                          |
-| Overlays and input     | `Sheet`, `HoverCard`, `EmojiPicker`, `DropZone`, `InlineSelect`, `NativeSelect`, `RadioButtonGroup`                                                                        |
+| Overlays and input     | `HoverCard`, `EmojiPicker`, `DropZone`, `InlineSelect`, `NativeSelect`, `RadioButtonGroup`                                                                                 |
 | Feedback and metrics   | `EmojiReactionButton`, `NumberValue`, `PressableFeedback`, `Rating`, `TextShimmer`, `TrendChip`                                                                            |
 | AI surfaces            | `ChainOfThought`, `ChatAttachment`, `ChatConversation`, `ChatListView`, `ChatLoader`, `ChatMessage`, `ChatMessageActions`, `ChatSource`, `PromptInput`, `PromptSuggestion` |
 
