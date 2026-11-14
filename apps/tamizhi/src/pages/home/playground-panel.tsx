@@ -2,8 +2,7 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 
 import { Maximize, Minimize } from '@vezham/icons-react'
-import { Sheet } from '@vezham/react-pro-v3'
-import { CloseButton, ScrollShadow, Surface } from '@vezham/react-v3'
+import { CloseButton, ScrollShadow, Sheet, Surface } from '@vezham/react-v3'
 
 import { IconButton } from './icon-button'
 
@@ -24,12 +23,7 @@ export const PlaygroundPanel = ({
 
   if (isCompact)
     return (
-      <Sheet
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement="bottom"
-        isHandleOnly
-        shouldAutoFocus>
+      <Sheet isOpen={isOpen} onOpenChange={onOpenChange} placement="bottom">
         <Sheet.Backdrop
           variant="blur"
           className="bg-overlay/10 z-80 backdrop-blur-xs">
