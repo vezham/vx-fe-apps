@@ -4,7 +4,7 @@ core:
   id: vezham-tamizhi
   name: Vezham Tamizhi
   shortName: Tamizhi
-  version: 26.0.1
+  version: 26.27.0
   description: Single app to manage your Vezham Tamizhi
   publisher:
     name: Vezham Technologies Private Limited
