@@ -2,24 +2,29 @@ import type { Locator, Page } from '@playwright/test'
 
 import { expect, test } from '@vezham/config/playwright/test'
 
+const waitForSheet = async (page: Page, dialog: Locator) => {
+  await expect(dialog).toBeInViewport({ ratio: 0.99 })
+  await expect(
+    page.locator('[data-slot="sheet-overlay"]').filter({ has: dialog })
+  ).not.toHaveAttribute('data-entering', 'true')
+}
+
 const openToolbarAction = async (page: Page, name: string) => {
   await page.getByRole('button', { name: 'More', exact: true }).click()
   if ((page.viewportSize()?.width ?? 1440) < 640)
-    await expect(
-      page.locator('[data-slot="sheet-content"]').filter({
-        has: page.getByRole('dialog', { name: 'Toolbar actions', exact: true })
-      })
-    ).toHaveAttribute('data-expanded', 'true')
+    await waitForSheet(
+      page,
+      page.getByRole('dialog', { name: 'Toolbar actions', exact: true })
+    )
   await page
     .getByRole('menuitem', { name, exact: true })
     .or(page.getByRole('button', { name, exact: true }))
     .click()
   if (name === 'Playground' && (page.viewportSize()?.width ?? 1440) < 1024)
-    await expect(
-      page.locator('[data-slot="sheet-content"]').filter({
-        has: page.getByRole('dialog', { name: 'Playground', exact: true })
-      })
-    ).toHaveAttribute('data-expanded', 'true')
+    await waitForSheet(
+      page,
+      page.getByRole('dialog', { name: 'Playground', exact: true })
+    )
 }
 
 const chooseAvatarOption = async (
@@ -125,10 +130,7 @@ test.describe('tamizhi', () => {
         name: 'Playground',
         exact: true
       })
-      await expect(sheet).toBeVisible()
-      await expect(
-        page.locator('[data-slot="sheet-content"]').filter({ has: sheet })
-      ).toHaveAttribute('data-expanded', 'true')
+      await waitForSheet(page, sheet)
       await expect(panel).toHaveCount(0)
       await expect(
         sheet.getByRole('button', { name: 'Choose outfit' })
@@ -409,11 +411,13 @@ test.describe('tamizhi', () => {
     await expect(
       page.locator('.tamizhi__companion-layer [data-animated="false"]')
     ).toBeVisible()
-    // vx-bot/NOTE: Scroll the body without moving the Sheet's swipe-to-dismiss container.
-    await playground
-      .locator('[data-slot="sheet-body"]')
-      .evaluate(body => body.scrollTo({ top: 0 }))
-    await playground.getByRole('tab', { name: 'Offline', exact: true }).click()
+    // vx-bot/NOTE: Keyboard activation avoids Firefox scrolling the Sheet's swipe-to-dismiss container.
+    const offline = playground.getByRole('tab', {
+      name: 'Offline',
+      exact: true
+    })
+    await offline.press('Enter')
+    await expect(offline).toHaveAttribute('aria-selected', 'true')
     await page.keyboard.press('Escape')
     await expect(
       page.getByRole('textbox', { name: 'Message Tamizhi' })
@@ -424,7 +428,7 @@ test.describe('tamizhi', () => {
     ).toBeLessThanOrEqual(390)
   })
 
-  test('renders the original mesh and switches task outfits and expressions', async ({
+  test('renders the available avatar renderer and switches task outfits and expressions', async ({
     page
   }) => {
     await page.setViewportSize({ width: 1440, height: 960 })
@@ -434,7 +438,16 @@ test.describe('tamizhi', () => {
     await expect(avatar).toHaveAttribute('data-status', 'ready', {
       timeout: 30000
     })
-    await expect(avatar).toHaveAttribute('data-renderer', 'mesh')
+    const supportsWebGL = await page.evaluate(() => {
+      const context = document.createElement('canvas').getContext('webgl2')
+      const supported = Boolean(context)
+      context?.getExtension('WEBGL_lose_context')?.loseContext()
+      return supported
+    })
+    await expect(avatar).toHaveAttribute(
+      'data-renderer',
+      supportsWebGL ? 'mesh' : 'canvas'
+    )
     const playground = page.getByRole('complementary', {
       name: 'Playground',
       exact: true
@@ -450,7 +463,9 @@ test.describe('tamizhi', () => {
       await expect(avatar).toHaveAttribute('data-rendered-outfit', id, {
         timeout: 30000
       })
-      expect((await avatar.screenshot()).equals(resting)).toBe(false)
+      await expect
+        .poll(async () => (await avatar.screenshot()).equals(resting))
+        .toBe(false)
     }
     await chooseAvatarOption(page, playground, 'expression', 'Wink')
     await expect(avatar).toHaveAttribute('data-rendered-expression', 'wink')

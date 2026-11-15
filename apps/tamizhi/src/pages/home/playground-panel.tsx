@@ -21,6 +21,8 @@ export const PlaygroundPanel = ({
 }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
+  if (!isOpen) return null
+
   if (isCompact)
     return (
       <Sheet isOpen={isOpen} onOpenChange={onOpenChange} placement="bottom">
@@ -64,8 +66,6 @@ export const PlaygroundPanel = ({
         </Sheet.Backdrop>
       </Sheet>
     )
-
-  if (!isOpen) return null
 
   return (
     <aside
