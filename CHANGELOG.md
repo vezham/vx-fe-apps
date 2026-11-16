@@ -1,3 +1,16 @@
+## 27.0.1 (2026-11-16)
+
+### 🏡 Chore
+
+- **release:** publish 27.0.0 ([4765e39](https://github.com/vezham/vx-fe-apps/commit/4765e39))
+- **repo:** update Nx to 24.0.5 ([9cfc761](https://github.com/vezham/vx-fe-apps/commit/9cfc761))
+- **workspace:** update v27 dependencies ([b49a0a1](https://github.com/vezham/vx-fe-apps/commit/b49a0a1))
+
+### ❤️ Thank You
+
+- v0xvigneshwaran
+- vx-vigneshwaran
+
 ## 26.27.0 (2026-11-15)
 
 ### 🚀 Features
